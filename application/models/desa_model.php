@@ -1,6 +1,6 @@
 <?php
 
-class desa_model extends CI_Model{
+class Desa_model extends CI_Model{
 
   public function __construct(){
     parent::__construct();

@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class track extends CI_Controller {
+class Track extends CI_Controller {
 
   public function index()
   {
