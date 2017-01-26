@@ -11,7 +11,7 @@ class Desa_model extends CI_Model{
   public function insert(){
     $data = $_POST;
     $data['tgl_ubah'] = date('Y-m-d H:i:s',time());
-    (isset($data['version'] ? $version = $data['version'] : $version = '1.9');
+    (isset($data['version']) ? $version = $data['version'] : $version = '1.9');
     unset($data['version']);
 
     // Masalah dengan auto_increment meloncat. Paksa supaya berurutan.
