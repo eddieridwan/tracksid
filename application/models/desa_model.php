@@ -11,6 +11,8 @@ class Desa_model extends CI_Model{
   public function insert(){
     $data = $_POST;
     $data['tgl_ubah'] = date('Y-m-d H:i:s',time());
+    $url = $data['url'];
+    $data['url'] = parse_url($url, PHP_URL_HOST);
     (isset($data['version']) ? $version = $data['version'] : $version = '1.9');
     unset($data['version']);
 
@@ -58,7 +60,8 @@ class Desa_model extends CI_Model{
     $this->db->query($sql);
     $akses = [];
     $akses['desa_id'] = $desa_id;
-    $akses['url_referrer'] = $this->agent->referrer();
+    $akses['url_referrer'] = $url;
+    $akses['request_uri'] = $_SERVER['REQUEST_URI'];
     $akses['client_ip'] = get_client_ip_server();
     $akses['opensid_version'] = $version;
     $akses['tgl'] = $data['tgl_ubah'];
