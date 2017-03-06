@@ -8,12 +8,9 @@ class Desa_model extends CI_Model{
     $this->load->library('user_agent');
   }
 
-  public function insert(){
-    $data = $_POST;
-    $data['tgl_ubah'] = date('Y-m-d H:i:s',time());
+  public function insert($data){
     $url = $data['url'];
     $data['url'] = parse_url($url, PHP_URL_HOST);
-    (isset($data['version']) ? $version = $data['version'] : $version = '1.9');
     unset($data['version']);
 
     // Masalah dengan auto_increment meloncat. Paksa supaya berurutan.
@@ -37,39 +34,38 @@ class Desa_model extends CI_Model{
       ";
 
     $out = $this->db->query($sql);
-    $desa_id = $this->db->insert_id();
-    // Kalau update, query lagi untuk mencari desa_id
-    if ($desa_id == 0) {
-      $this->db->where(array(
-        "nama_desa" => $data["nama_desa"],
-        "nama_kecamatan" => $data["nama_kecamatan"],
-        "nama_kabupaten" => $data["nama_kabupaten"],
-        "nama_provinsi" => $data["nama_provinsi"],
-        "ip_address" => $data["ip_address"]
-      ));
-      $query = $this->db->get("desa");
-      $desa = $query->row_array();
-      $desa_id = $desa['id'];
-    }
-
-    // Masalah dengan auto_increment meloncat. Paksa supaya berurutan.
-    // https://ubuntuforums.org/showthread.php?t=2086550
-    // PERHATIAN: insert ke tabel akses memasukkan dua baris duplikat, sehingga
-    // perlu dibuatkan index unik (perlu dicari sebabnya -- mungkin bug di mysql atau codeigniter)
-    $sql = "ALTER TABLE akses AUTO_INCREMENT = 1";
-    $this->db->query($sql);
-    $akses = [];
-    $akses['desa_id'] = $desa_id;
-    $akses['url_referrer'] = $url;
-    $akses['request_uri'] = $_SERVER['REQUEST_URI'];
-    $akses['client_ip'] = get_client_ip_server();
-    $akses['opensid_version'] = $version;
-    $akses['tgl'] = $data['tgl_ubah'];
-    $sql = $this->db->set($akses)->get_compiled_insert('akses');
-
-    $out2 = $this->db->query($sql);
-    return "desa: ".$out." akses: ".$out2;
+    return "desa: ".$out;
   }
 
+  private function filter_sql(){
+    if(isset($_SESSION['filter'])){
+      $filter = $_SESSION['filter'];
+      if ($filter == 1)
+        $filter_sql = " AND NOT url_referrer LIKE '%localhost%' AND NOT url_referrer LIKE '%192.168%' AND NOT url_referrer LIKE '%127.0.0.1%' AND NOT url_referrer LIKE '%/10.%'";
+      else
+        $filter_sql = " AND (url_referrer LIKE '%localhost%' OR url_referrer LIKE '%192.168%' OR url_referrer LIKE '%127.0.0.1%' OR url_referrer LIKE '%/10.%')";
+    return $filter_sql;
+    }
+  }
+
+
+  public function list_desa(){
+    $sql = "SELECT * FROM
+      (SELECT d.*,
+        (SELECT url_referrer FROM akses WHERE d.id = desa_id AND url_referrer IS NOT NULL ORDER BY tgl DESC LIMIT 1) as url_referrer,
+        (SELECT tgl FROM akses WHERE d.id = desa_id AND url_referrer IS NOT NULL ORDER BY tgl DESC LIMIT 1) as tgl,
+        (SELECT opensid_version FROM akses WHERE d.id = desa_id AND url_referrer IS NOT NULL ORDER BY tgl DESC LIMIT 1) as opensid_version,
+        (SELECT client_ip FROM akses WHERE d.id = desa_id AND url_referrer IS NOT NULL ORDER BY tgl DESC LIMIT 1) as client_ip
+        FROM desa d
+        WHERE NOT d.nama_provinsi = '' AND d.nama_provinsi NOT LIKE '%NT13%' AND d.nama_kabupaten NOT LIKE '%Bar4t%'
+        ORDER BY d.nama_provinsi, d.nama_kabupaten, d.nama_kecamatan
+      ) x
+      WHERE NOT url_referrer ='' ";
+
+    $sql .= $this->filter_sql();
+    $query = $this->db->query($sql);
+    $data = $query->result_array();
+    return $data;
+  }
 }
 ?>

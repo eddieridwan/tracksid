@@ -5,21 +5,20 @@ class Track extends CI_Controller {
 
   function __construct(){
     parent::__construct();
+    $this->load->helper('url');
     session_start();
   }
 
-  public function index()
-  {
-    $this->load->view('welcome_message');
-  }
-
   public function desa(){
-    $_SESSION['seq'] = 1;
     $this->load->model('desa_model');
+    $this->load->model('akses_model');
     echo "<pre>";
     print_r($_POST);
     echo "</pre>";
-    $result = $this->desa_model->insert();
-    echo "Result: ".$result;
+    $data = $_POST;
+    $data['tgl_ubah'] = date('Y-m-d H:i:s',time());
+    $result1 = $this->desa_model->insert($data);
+    $result2 = $this->akses_model->insert($data);
+    echo "Result: ".$result1." ".$result2;
   }
 }
