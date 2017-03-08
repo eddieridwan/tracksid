@@ -1,5 +1,7 @@
 <?php
 
+  define("LOKASI_CONFIG", 'config/');
+
   function get_client_ip_server() {
     $ipaddress = '';
     if (isset($_SERVER['HTTP_CLIENT_IP']))
@@ -18,6 +20,20 @@
       $ipaddress = 'UNKNOWN';
 
     return $ipaddress;
+  }
+
+/**
+ * KonfigurasiDatabase
+ *
+ * Mengembalikan path file konfigurasi database desa
+ *
+ * @access  public
+ * @return  string
+ */
+  function konfigurasi_database()
+  {
+    $konfigurasi_database = LOKASI_CONFIG . 'database.php';
+    return $konfigurasi_database;
   }
 
 ?>

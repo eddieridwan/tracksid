@@ -94,3 +94,9 @@ $db['default'] = array(
 	'failover' => array(),
 	'save_queries' => TRUE
 );
+
+$konfigurasi_db = konfigurasi_database();
+if(is_file($konfigurasi_db)) {
+  include($konfigurasi_db);
+}
+
