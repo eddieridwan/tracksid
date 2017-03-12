@@ -10,13 +10,16 @@ class Laporan extends CI_Controller {
     session_start();
   }
 
-  public function index()
+  public function index($offset=0)
   {
     if(isset($_SESSION['filter']))
       $data['filter'] = $_SESSION['filter'];
     else $data['filter'] = '';
 
-    $data['list_desa'] = $this->desa_model->list_desa();
+    $data_desa = $this->desa_model->list_desa($offset);
+    $data['list_desa'] = $data_desa['list_desa'];
+    $data['links'] = $data_desa['links'];
+    $data['offset'] = $offset;
     $this->load->view('list_desa', $data);
   }
 

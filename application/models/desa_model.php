@@ -48,9 +48,25 @@ class Desa_model extends CI_Model{
     }
   }
 
+  function paging($offset=0,$main_sql){
 
-  public function list_desa(){
-    $sql = "SELECT * FROM
+    $sql      = "SELECT COUNT(id) AS jml ".$main_sql;
+    $query    = $this->db->query($sql);
+    $row      = $query->row_array();
+    $jml_data = $row['jml'];
+
+    $this->load->library('pagination');
+    $cfg["base_url"] = base_url() . "index.php/laporan/index";
+    $cfg['page']     = $offset;
+    $cfg['per_page'] = 20;
+    // $cfg['per_page'] = $_SESSION['per_page'];
+    $cfg['total_rows'] = $jml_data;
+    $this->pagination->initialize($cfg);
+    return $this->pagination;
+  }
+
+  public function list_desa($offset=0){
+    $main_sql = "FROM
       (SELECT d.*,
         (SELECT url_referrer FROM akses WHERE d.id = desa_id AND url_referrer IS NOT NULL ORDER BY tgl DESC LIMIT 1) as url_referrer,
         (SELECT tgl FROM akses WHERE d.id = desa_id AND url_referrer IS NOT NULL ORDER BY tgl DESC LIMIT 1) as tgl,
@@ -62,9 +78,15 @@ class Desa_model extends CI_Model{
       ) x
       WHERE NOT url_referrer ='' ";
 
-    $sql .= $this->filter_sql();
+    $main_sql .= $this->filter_sql();
+    $this->paging($offset, $main_sql);
+    $paging_sql = ' LIMIT ' .$offset. ',' .$this->pagination->per_page;
+    $sql = "SELECT * ".$main_sql;
+    $sql .= $paging_sql;
+
     $query = $this->db->query($sql);
-    $data = $query->result_array();
+    $data['list_desa'] = $query->result_array();
+    $data['links'] = $this->pagination->create_links();
     return $data;
   }
 }

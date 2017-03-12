@@ -33,7 +33,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     </tr>
     <?php foreach ($list_desa as $urut => $desa) : ?>
       <tr>
-        <td><?php echo $urut+1;?></td>
+        <td><?php echo $offset+$urut+1;?></td>
         <td><?php echo $desa['nama_desa']; ?></td>
         <td><?php echo $desa['nama_kecamatan']; ?></td>
         <td><?php echo $desa['nama_kabupaten']; ?></td>
@@ -46,28 +46,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   </table>
 </form>
 
-<div class="uibutton-group">
-<?php  if($paging->start_link): ?>
-<a href="<?php echo site_url("web/widget/$paging->start_link/$o")?>" class="uibutton">Awal</a>
-<?php  endif; ?>
-<?php  if($paging->prev): ?>
-<a href="<?php echo site_url("web/widget/$paging->prev/$o")?>" class="uibutton">Prev</a>
-<?php  endif; ?>
-</div>
-<div class="uibutton-group">
-
-<?php  for($i=$paging->start_link;$i<=$paging->end_link;$i++): ?>
-<a href="<?php echo site_url("web/widget/$i/$o")?>" <?php  jecho($p,$i,"class='uibutton special'")?> class="uibutton"><?php echo $i?></a>
-<?php  endfor; ?>
-</div>
-<div class="uibutton-group">
-<?php  if($paging->next): ?>
-<a href="<?php echo site_url("web/widget/$paging->next/$o")?>" class="uibutton">Next</a>
-<?php  endif; ?>
-<?php  if($paging->end_link): ?>
-<a href="<?php echo site_url("web/widget/$paging->end_link/$o")?>" class="uibutton">Akhir</a>
-<?php  endif; ?>
-</div>
+<?php echo $links ?>
 
 </div>
 
