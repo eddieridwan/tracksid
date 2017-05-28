@@ -2,6 +2,11 @@
 
 class Desa_model extends CI_Model{
 
+  var $table = 'customers';
+  var $column_order = array(null, 'nama_desa','nama_kecamatan','nama_kabupaten','nama_provinsi','url_referrer','opensid_version','tgl'); //set column field database for datatable orderable
+  var $column_search = array('nama_desa','nama_kecamatan','nama_kabupaten','nama_provinsi'); //set column field database for datatable searchable
+  var $order = array('id' => 'asc'); // default order
+
   public function __construct(){
     parent::__construct();
     $this->load->database();
@@ -89,5 +94,64 @@ class Desa_model extends CI_Model{
     $data['links'] = $this->pagination->create_links();
     return $data;
   }
+
+
+// ===============================
+
+  private function _get_main_query()
+  {
+    $main_sql = "FROM
+      (SELECT d.*,
+        (SELECT url_referrer FROM akses WHERE d.id = desa_id AND url_referrer IS NOT NULL ORDER BY tgl DESC LIMIT 1) as url_referrer,
+        (SELECT tgl FROM akses WHERE d.id = desa_id AND url_referrer IS NOT NULL ORDER BY tgl DESC LIMIT 1) as tgl,
+        (SELECT opensid_version FROM akses WHERE d.id = desa_id AND url_referrer IS NOT NULL ORDER BY tgl DESC LIMIT 1) as opensid_version,
+        (SELECT client_ip FROM akses WHERE d.id = desa_id AND url_referrer IS NOT NULL ORDER BY tgl DESC LIMIT 1) as client_ip
+        FROM desa d
+        WHERE NOT d.nama_provinsi = '' AND d.nama_provinsi NOT LIKE '%NT13%' AND d.nama_kabupaten NOT LIKE '%Bar4t%'
+        ORDER BY d.nama_provinsi, d.nama_kabupaten, d.nama_kecamatan
+      ) x
+      WHERE NOT url_referrer ='' ";
+    return $main_sql;
+  }
+
+  private function _get_filtered_query()
+  {
+    $sSearch = $_POST['search']['value'];
+    $filtered_query = $this->_get_main_query()."AND (nama_desa LIKE '%".$sSearch."%' or nama_kecamatan LIKE '%".$sSearch."%' or nama_kabupaten LIKE '%".$sSearch."%' or nama_provinsi LIKE '%".$sSearch."%') ";
+    return $filtered_query;
+  }
+
+  function get_datatables()
+  {
+      $qry = "SELECT * ".$this->_get_filtered_query();
+      if(isset($_POST['order'])) // here order processing
+      {
+        $sort_by = $this->column_order[$_POST['order']['0']['column']];
+        $sort_type = $_POST['order']['0']['dir'];
+        $qry .= " ORDER BY ".$sort_by." ".$sort_type;
+      }
+     if($_POST['length'] != -1)
+       $qry .= " LIMIT ".$_POST['start'].", ".$_POST['length'];
+     $query = $this->db->query($qry);
+     return $query->result_array();
+
+  }
+
+  function count_filtered()
+  {
+    $sql = "SELECT COUNT(id) AS jml ".$this->_get_filtered_query();
+    $query    = $this->db->query($sql);
+    $row      = $query->row_array();
+    return $row['jml'];
+  }
+
+  public function count_all()
+  {
+    $sql = "SELECT COUNT(id) AS jml ".$this->_get_main_query();
+    $query    = $this->db->query($sql);
+    $row      = $query->row_array();
+    return $row['jml'];
+  }
+
 }
 ?>

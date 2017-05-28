@@ -27,7 +27,7 @@ class Akses_model extends CI_Model{
     // perlu dibuatkan index unik (perlu dicari sebabnya -- mungkin bug di mysql atau codeigniter)
     $sql = "ALTER TABLE akses AUTO_INCREMENT = 1";
     $this->db->query($sql);
-    $akses = [];
+    $akses = array();
     $akses['desa_id'] = $desa_id;
     $akses['url_referrer'] = $data['url'];
     $akses['request_uri'] = $_SERVER['REQUEST_URI'];
