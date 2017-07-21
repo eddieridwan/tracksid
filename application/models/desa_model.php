@@ -71,18 +71,7 @@ class Desa_model extends CI_Model{
   }
 
   public function list_desa($offset=0){
-    $main_sql = "FROM
-      (SELECT d.*,
-        (SELECT url_referrer FROM akses WHERE d.id = desa_id AND url_referrer IS NOT NULL ORDER BY tgl DESC LIMIT 1) as url_referrer,
-        (SELECT tgl FROM akses WHERE d.id = desa_id AND url_referrer IS NOT NULL ORDER BY tgl DESC LIMIT 1) as tgl,
-        (SELECT opensid_version FROM akses WHERE d.id = desa_id AND url_referrer IS NOT NULL ORDER BY tgl DESC LIMIT 1) as opensid_version,
-        (SELECT client_ip FROM akses WHERE d.id = desa_id AND url_referrer IS NOT NULL ORDER BY tgl DESC LIMIT 1) as client_ip
-        FROM desa d
-        WHERE NOT d.nama_provinsi = '' AND d.nama_provinsi NOT LIKE '%NT13%' AND d.nama_kabupaten NOT LIKE '%Bar4t%'
-        ORDER BY d.nama_provinsi, d.nama_kabupaten, d.nama_kecamatan
-      ) x
-      WHERE NOT url_referrer ='' ";
-
+    $main_sql = $this->_get_main_query();
     $main_sql .= $this->filter_sql();
     $this->paging($offset, $main_sql);
     $paging_sql = ' LIMIT ' .$offset. ',' .$this->pagination->per_page;
@@ -95,6 +84,25 @@ class Desa_model extends CI_Model{
     return $data;
   }
 
+  /*
+    Jangan rekam, jika:
+    - ada kolom nama wilayah kosong
+    - ada kolom wilayah yang masih merupakan contoh
+  */
+  public function abaikan($data){
+    $abaikan = false;
+    if ( empty($data['nama_desa']) OR empty($data['nama_kecamatan']) OR empty($data['nama_kabupaten']) OR empty($data['nama_provinsi']) ) {
+      $abaikan = true;
+    }
+    if (strpos($data['nama_desa'], 'Senggig1') !== FALSE OR
+        strpos($data['nama_kecamatan'], 'Batulay4r') !== FALSE OR
+        strpos($data['nama_kabupaten'], 'Bar4t') !== FALSE OR
+        strpos($data['nama_provinsi'], 'NT13') !== FALSE
+       ) {
+      $abaikan = true;
+    }
+    return $abaikan;
+  }
 
 // ===============================
 
