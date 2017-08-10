@@ -119,6 +119,7 @@ class Desa_model extends CI_Model{
         ORDER BY d.nama_provinsi, d.nama_kabupaten, d.nama_kecamatan
       ) x
       WHERE NOT url_referrer ='' ";
+    $main_sql .= $this->_akses_query();
     return $main_sql;
   }
 
@@ -127,6 +128,13 @@ class Desa_model extends CI_Model{
     $sSearch = $_POST['search']['value'];
     $filtered_query = $this->_get_main_query()."AND (nama_desa LIKE '%".$sSearch."%' or nama_kecamatan LIKE '%".$sSearch."%' or nama_kabupaten LIKE '%".$sSearch."%' or nama_provinsi LIKE '%".$sSearch."%') ";
     return $filtered_query;
+  }
+
+  // Hanya laporkan desa yang situsnya diakses dalam 3 bulan terakhir
+  private function _akses_query()
+  {
+    $sql = " AND TIMESTAMPDIFF(MONTH, tgl_ubah, NOW()) <= 2 ";
+    return $sql;
   }
 
   function get_datatables()
