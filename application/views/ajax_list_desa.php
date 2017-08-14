@@ -85,6 +85,13 @@ $(document).ready(function() {
 
     });
 
+    // https://stackoverflow.com/questions/14619498/datatables-global-search-on-keypress-of-enter-key-instead-of-any-key-keypress
+    $('#table_filter input').unbind();
+    $('#table_filter input').bind('keyup', function(e) {
+        if(e.keyCode == 13) {
+            table.search( this.value ).draw();
+        }
+    });
 });
 
 </script>
