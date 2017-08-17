@@ -34,7 +34,7 @@ class Desa_model extends CI_Model{
     if (empty($data['id'])){
       $out = $this->db->insert('desa', $data);
       $data['id'] = $this->db->insert_id();
-      $this->email("Desa baru", json_encode($data));
+      $this->email_facebook($data);
       $hasil = "<br>Desa baru: ".$data['id'];
     } else {
       $out = $this->db->where('id',$data['id'])->update('desa',$data);
@@ -174,10 +174,10 @@ class Desa_model extends CI_Model{
     return $row['jml'];
   }
 
-  private function email($subject, $message){
+  private function email($subject, $message, $to="eddie.ridwan@gmail.com"){
     $this->load->library('email'); // Note: no $config param needed
     $this->email->from('opensid.server@gmail.com', 'OpenSID Tracker');
-    $this->email->to('eddie.ridwan@gmail.com');
+    $this->email->to($to);
     $this->email->subject($subject);
     $this->email->message($message);
     if ($this->email->send())
@@ -185,5 +185,22 @@ class Desa_model extends CI_Model{
     else show_error($this->email->print_debugger());
   }
 
+  private function email_facebook($data){
+    $message =
+      "Desa: ".$data['nama_desa']."\r\n".
+      "Kecamatan: ".$data['nama_kecamatan']."\r\n".
+      "Kabupaten: ".$data['nama_kabupaten']."\r\n".
+      "Provinsi: ".$data['nama_provinsi']."\r\n".
+      "Website: "."http://".$data['url']."\r\n";
+    $this->load->library('email'); // Note: no $config param needed
+    $this->email->from('opensid.server@gmail.com', 'Desa OpenSID');
+    $this->email->to("OpenSID@groups.facebook.com");
+    $this->email->cc("eddie.ridwan@gmail.com");
+    $this->email->subject("Desa Pengguna OpenSID");
+    $this->email->message($message);
+    if ($this->email->send())
+      echo "<br>Email desa baru ke Facebook: ".$message;
+    else show_error($this->email->print_debugger());
+  }
 }
 ?>
