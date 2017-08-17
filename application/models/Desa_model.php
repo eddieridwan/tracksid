@@ -16,6 +16,7 @@ class Desa_model extends CI_Model{
   public function insert(&$data){
     $url = $data['url'];
     $data['url'] = parse_url($url, PHP_URL_HOST);
+    $version = $data['version'];
     unset($data['version']);
 
     // Masalah dengan auto_increment meloncat. Paksa supaya berurutan.
@@ -39,6 +40,7 @@ class Desa_model extends CI_Model{
       $out = $this->db->where('id',$data['id'])->update('desa',$data);
       $hasil = "<br>Desa lama: ".$data['id'];
     }
+    $data['version'] = $version;
     return $hasil." ".$out;
   }
 
