@@ -9,3 +9,4 @@ if (file_exists($file_path = FCPATH.'config/sandi.php'))
 	{
 		include($file_path);
 	}
+$config['nothing'] = '';
