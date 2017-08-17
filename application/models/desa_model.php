@@ -13,33 +13,33 @@ class Desa_model extends CI_Model{
     $this->load->library('user_agent');
   }
 
-  public function insert($data){
+  public function insert(&$data){
     $url = $data['url'];
     $data['url'] = parse_url($url, PHP_URL_HOST);
     unset($data['version']);
 
     // Masalah dengan auto_increment meloncat. Paksa supaya berurutan.
     // https://ubuntuforums.org/showthread.php?t=2086550
-    $sql = "ALTER TABLE desa AUTO_INCREMENT = 1";
-    $this->db->query($sql);
+    // $sql = "ALTER TABLE desa AUTO_INCREMENT = 1";
+    // $this->db->query($sql);
 
-    $sql = $this->db->set($data)->get_compiled_insert('desa');
-    $sql .= "
-      ON DUPLICATE KEY UPDATE
-        kode_desa = VALUES(kode_desa),
-        kode_pos = VALUES(kode_pos),
-        kode_kecamatan = VALUES(kode_kecamatan),
-        kode_kabupaten = VALUES(kode_kabupaten),
-        kode_provinsi = VALUES(kode_provinsi),
-        url = VALUES(url),
-        lat = VALUES(lat),
-        lng = VALUES(lng),
-        alamat_kantor = VALUES(alamat_kantor),
-        tgl_ubah = VALUES(tgl_ubah);
-      ";
-
-    $out = $this->db->query($sql);
-    return "desa: ".$out;
+    $cek_desa = array(
+      "nama_desa" => $data['nama_desa'],
+      "nama_kecamatan" => $data['nama_kecamatan'],
+      "nama_kabupaten" => $data['nama_kabupaten'],
+      "nama_provinsi" => $data['nama_provinsi']
+      );
+    $data['id'] = $this->db->select('id')->where($cek_desa)->get('desa')->row()->id;
+    if (empty($data['id'])){
+      $out = $this->db->insert('desa', $data);
+      $data['id'] = $this->db->insert_id();
+      $this->email("Desa baru", json_encode($data));
+      $hasil = "<br>Desa baru: ".$data['id'];
+    } else {
+      $out = $this->db->where('id',$data['id'])->update('desa',$data);
+      $hasil = "<br>Desa lama: ".$data['id'];
+    }
+    return $hasil." ".$out;
   }
 
   private function filter_sql(){
@@ -167,6 +167,17 @@ class Desa_model extends CI_Model{
     $query    = $this->db->query($sql);
     $row      = $query->row_array();
     return $row['jml'];
+  }
+
+  private function email($subject, $message){
+    $this->load->library('email'); // Note: no $config param needed
+    $this->email->from('opensid.server@gmail.com', 'OpenSID Tracker');
+    $this->email->to('eddie.ridwan@gmail.com');
+    $this->email->subject($subject);
+    $this->email->message($message);
+    if ($this->email->send())
+      echo "<br>Email desa baru: ".$message;
+    else show_error($this->email->print_debugger());
   }
 
 }

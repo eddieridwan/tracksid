@@ -24,6 +24,19 @@ class Laporan extends CI_Controller {
     $this->load->view('ajax_list_desa');
   }
 
+  public function test_email(){
+    $this->load->library('email'); // Note: no $config param needed
+    $this->email->from('opensid.server@gmail.com', 'OpenSID Tracker');
+    $this->email->to('eddie.ridwan@gmail.com');
+    $this->email->subject('Test email from CI and Gmail');
+    $this->email->message('This is a test.');
+    echo "before send ".config_item('smtp_user')." <br>";
+    if ($this->email->send())
+      echo "success ======<br>";
+    else show_error($this->email->print_debugger());
+    echo "after send";
+  }
+
   public function filter(){
     $filter = $this->input->post('filter');
     if($filter!=0)

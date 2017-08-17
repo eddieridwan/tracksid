@@ -16,11 +16,10 @@ class Track extends CI_Controller {
     $this->load->model('desa_model');
     $data = $_POST;
     if($this->desa_model->abaikan($data)) return;
-
     $this->load->model('akses_model');
-    $data['tgl_ubah'] = date('Y-m-d H:i:s',time());
+    $data['tgl_ubah'] = date('Y-m-d G:i:s');
     $result1 = $this->desa_model->insert($data);
     $result2 = $this->akses_model->insert($data);
-    echo "Result: ".$result1." ".$result2;
+    echo "<br>Result: ".$result1." ".$result2;
   }
 }
