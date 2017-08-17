@@ -91,13 +91,13 @@ class Desa_model extends CI_Model{
   */
   public function abaikan($data){
     $abaikan = false;
-    if ( empty(preg_replace("/[^a-zA-Z]/", "", $data['nama_desa']))
-      OR empty(preg_replace("/[^a-zA-Z]/", "", $data['nama_kecamatan']))
-      OR empty(preg_replace("/[^a-zA-Z]/", "", $data['nama_kabupaten']))
-      OR empty(preg_replace("/[^a-zA-Z]/", "", $data['nama_provinsi'])) ) {
+    $desa = preg_replace("/[^a-zA-Z]/", "", $data['nama_desa']);
+    $kec = preg_replace("/[^a-zA-Z]/", "", $data['nama_kecamatan']);
+    $kab = preg_replace("/[^a-zA-Z]/", "", $data['nama_kabupaten']);
+    $prov = preg_replace("/[^a-zA-Z]/", "", $data['nama_provinsi']);
+    if ( empty($desa) OR empty($kec) OR empty($kab) OR empty($prov) ) {
       $abaikan = true;
-    }
-    if (strpos($data['nama_desa'], 'Senggig1') !== FALSE OR
+    } elseif (strpos($data['nama_desa'], 'Senggig1') !== FALSE OR
         strpos($data['nama_kecamatan'], 'Batulay4r') !== FALSE OR
         strpos($data['nama_kabupaten'], 'Bar4t') !== FALSE OR
         strpos($data['nama_provinsi'], 'NT13') !== FALSE
@@ -178,9 +178,9 @@ class Desa_model extends CI_Model{
     $this->email->to('eddie.ridwan@gmail.com');
     $this->email->subject($subject);
     $this->email->message($message);
-    // if ($this->email->send())
+    if ($this->email->send())
       echo "<br>Email desa baru: ".$message;
-    // else show_error($this->email->print_debugger());
+    else show_error($this->email->print_debugger());
   }
 
 }
