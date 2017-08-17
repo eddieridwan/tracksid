@@ -20,8 +20,8 @@ class Desa_model extends CI_Model{
 
     // Masalah dengan auto_increment meloncat. Paksa supaya berurutan.
     // https://ubuntuforums.org/showthread.php?t=2086550
-    // $sql = "ALTER TABLE desa AUTO_INCREMENT = 1";
-    // $this->db->query($sql);
+    $sql = "ALTER TABLE desa AUTO_INCREMENT = 1";
+    $this->db->query($sql);
 
     $cek_desa = array(
       "nama_desa" => $data['nama_desa'],
