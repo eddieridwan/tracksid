@@ -17,7 +17,9 @@ class Desa_model extends CI_Model{
     $url = $data['url'];
     $data['url'] = parse_url($url, PHP_URL_HOST);
     $version = $data['version'];
+    $external_ip = $data['external_ip'];
     unset($data['version']);
+    unset($data['external_ip']);
 
     // Masalah dengan auto_increment meloncat. Paksa supaya berurutan.
     // https://ubuntuforums.org/showthread.php?t=2086550
@@ -35,7 +37,8 @@ class Desa_model extends CI_Model{
       $hasil = "<br>Desa lama: ".$data['id'];
     }
     $data['version'] = $version;
-    return $hasil." ".$out;
+    $data['external_ip'] = $external_ip;
+   return $hasil." ".$out;
   }
 
   private function _desa_baru($data){
