@@ -23,15 +23,9 @@ class Desa_model extends CI_Model{
     // https://ubuntuforums.org/showthread.php?t=2086550
     $sql = "ALTER TABLE desa AUTO_INCREMENT = 1";
     $this->db->query($sql);
-
-    $cek_desa = array(
-      "nama_desa" => $data['nama_desa'],
-      "nama_kecamatan" => $data['nama_kecamatan'],
-      "nama_kabupaten" => $data['nama_kabupaten'],
-      "nama_provinsi" => $data['nama_provinsi']
-      );
-    $data['id'] = $this->db->select('id')->where($cek_desa)->get('desa')->row()->id;
+    $data['id'] = $this->_desa_baru($data);
     if (empty($data['id'])){
+      $data['is_local'] = is_local($data['url']) ? '1' : '0';
       $out = $this->db->insert('desa', $data);
       $data['id'] = $this->db->insert_id();
       $this->email_github($data);
@@ -42,6 +36,38 @@ class Desa_model extends CI_Model{
     }
     $data['version'] = $version;
     return $hasil." ".$out;
+  }
+
+  private function _desa_baru($data){
+    /*
+      Dibuat entri di tabel desa untuk setiap kombinasi:
+        1. Nama desa, nama kec, nama kab, nama prov, ip_address jika online (is_local = FALSE)
+        2. Nama desa, nama kec, nama kab, nama prov, is_local = TRUE
+      Cara ini tidak menjamin setiap entri mewakili desa yang sebenarnya, karena bisa saja:
+      a. Database contoh/pelatihan/demo menggunakan nama desa sebenarnya di localhost, sehingga akan tergabung dengan entri database offline untuk desa tersebut
+      b. Database contoh/pelatihan/demo menggunakan nama desa sebenarnya di online, sehingga akan mempunyai entri terpisah, dan akan tampak seperti ada lebih dari satu database online untuk desa tersebut
+      c. Database contoh/pelatihan/demo menggunakan nama desa yang sebenarnya tidak ada, sehingga akan tampak adanya desa yang tidak benar
+      d. Nama desa/kec/kab/prov diubah (mis karena salah ejaan) akan tersimpan sebagai desa terpisah, sehingga akan tampak beberapa entri untuk desa tersebut dengan ejaan yang berbeda
+      e. Database desa pindah hosting dengan ip_address yang berbeda, sehingga akan tampak lebih dari satu database online untuk desa tersebut.
+
+      Untuk kasus (d) dan (e), entri yang salah/kadaluarsa akan terfilter dari laporan jika tidak diakses lagi dalam masa 2 bulan.
+
+      TODO: Untuk kasus (b) dan (c), nanti akan difilter dari laporan dengan mengidentifikasi ip_address atau url (jika online) yang merupakan server contoh/pelatihan/demo.
+
+      TODO: Jangka panjang, akan digunakan daftar desa baku, sehingga tidak akan ada entri untuk desa yang sebenarnya tidak ada atau tertulis salah.
+    */
+    $cek_desa = array(
+      "nama_desa" => strtolower($data['nama_desa']),
+      "nama_kecamatan" => strtolower($data['nama_kecamatan']),
+      "nama_kabupaten" => strtolower($data['nama_kabupaten']),
+      "nama_provinsi" => strtolower($data['nama_provinsi'])
+      );
+    if (is_local($data['url'])) {
+      $cek_desa = array_merge($cek_desa, array("is_local" => '1'));
+    } else
+      $cek_desa = array_merge($cek_desa, array("ip_address" => $data['ip_address'], "is_local" => '0'));
+    $id = $this->db->select('id')->where($cek_desa)->get('desa')->row()->id;
+    return $id;
   }
 
   private function filter_sql(){
@@ -89,20 +115,20 @@ class Desa_model extends CI_Model{
   /*
     Jangan rekam, jika:
     - ada kolom nama wilayah kosong
-    - ada kolom wilayah yang masih merupakan contoh
+    - ada kolom wilayah yang masih merupakan contoh (berisi karakter non-alpha)
   */
   public function abaikan($data){
     $abaikan = false;
-    $desa = preg_replace("/[^a-zA-Z]/", "", $data['nama_desa']);
-    $kec = preg_replace("/[^a-zA-Z]/", "", $data['nama_kecamatan']);
-    $kab = preg_replace("/[^a-zA-Z]/", "", $data['nama_kabupaten']);
-    $prov = preg_replace("/[^a-zA-Z]/", "", $data['nama_provinsi']);
+    $desa = trim($data['nama_desa']);
+    $kec = trim($data['nama_kecamatan']);
+    $kab = trim($data['nama_kabupaten']);
+    $prov = trim($data['nama_provinsi']);
     if ( empty($desa) OR empty($kec) OR empty($kab) OR empty($prov) ) {
       $abaikan = true;
-    } elseif (strpos($data['nama_desa'], 'Senggig1') !== FALSE OR
-        strpos($data['nama_kecamatan'], 'Batulay4r') !== FALSE OR
-        strpos($data['nama_kabupaten'], 'Bar4t') !== FALSE OR
-        strpos($data['nama_provinsi'], 'NT13') !== FALSE
+    } elseif (preg_match('/[^a-zA-Z\s:]/', $desa) OR
+        preg_match('/[^a-zA-Z\s:]/', $kec) OR
+        preg_match('/[^a-zA-Z\s:]/', $kab) OR
+        preg_match('/[^a-zA-Z\s:]/', $prov)
        ) {
       $abaikan = true;
     }
