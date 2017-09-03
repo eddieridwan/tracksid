@@ -58,7 +58,7 @@ class Laporan extends CI_Controller {
       $row[] = $desa['nama_kecamatan'];
       $row[] = $desa['nama_kabupaten'];
       $row[] = $desa['nama_provinsi'];
-      $row[] = isset($desa['url_referrer']) ? $desa['url_referrer'] : '';
+      $row[] = $this->_show_url($desa['url_referrer']);
       $row[] = $desa['opensid_version'];
       $row[] = $desa['tgl'];
 
@@ -73,6 +73,15 @@ class Laporan extends CI_Controller {
         );
     //output to json format
     echo json_encode($output);
+  }
+
+  private function _show_url($url) {
+    if (empty($url)) return '';
+    elseif (is_local($url)) return $url;
+    else {
+      $html = "<a href='http://$url' target='_blank'>$url</a>";
+      return $html;
+    }
   }
 
 

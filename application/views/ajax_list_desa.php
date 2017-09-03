@@ -16,7 +16,12 @@
     </head>
 <body>
     <div class="container">
-        <h1 style="font-size:20pt">Desa Pengguna OpenSID</h1>
+        <h1 style="font-size:20pt">
+            <span>Desa Pengguna OpenSID </span>
+            <?php if (defined('ENVIRONMENT') AND ENVIRONMENT == 'development'): ?>
+              <span style="background-color: orange;">(DEVELOPMENT)</span>
+            <?php endif; ?>
+        </h1>
 
         <h3>Data Desa</h3>
         <br />

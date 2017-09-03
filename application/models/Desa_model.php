@@ -34,7 +34,7 @@ class Desa_model extends CI_Model{
     if (empty($data['id'])){
       $out = $this->db->insert('desa', $data);
       $data['id'] = $this->db->insert_id();
-      $this->email_facebook($data);
+      $this->email_github($data);
       $hasil = "<br>Desa baru: ".$data['id'];
     } else {
       $out = $this->db->where('id',$data['id'])->update('desa',$data);
@@ -185,7 +185,7 @@ class Desa_model extends CI_Model{
     else show_error($this->email->print_debugger());
   }
 
-  private function email_facebook($data){
+  private function email_github($data){
     $message =
       "Desa: ".$data['nama_desa']."\r\n".
       "Kecamatan: ".$data['nama_kecamatan']."\r\n".
@@ -194,12 +194,11 @@ class Desa_model extends CI_Model{
       "Website: "."http://".$data['url']."\r\n";
     $this->load->library('email'); // Note: no $config param needed
     $this->email->from('opensid.server@gmail.com', 'Desa OpenSID');
-    $this->email->to("OpenSID@groups.facebook.com");
-    $this->email->cc("eddie.ridwan@gmail.com");
+    $this->email->to("reply+0003cedb28a15af7509fdc8d2eea2ad81330dadac78af6e492cf0000000115b3c7f892a169ce0f03d3ca@reply.github.com");
     $this->email->subject("Desa Pengguna OpenSID");
     $this->email->message($message);
     if ($this->email->send())
-      echo "<br>Email desa baru ke Facebook: ".$message;
+      echo "<br>Email desa baru ke Github: ".$message;
     else show_error($this->email->print_debugger());
   }
 }

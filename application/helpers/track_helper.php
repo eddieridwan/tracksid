@@ -22,6 +22,12 @@
     return $ipaddress;
   }
 
+  function is_local($url) {
+    if (preg_match('/localhost|192\.168|127\.0\.0\.1|\/10\./i', $url))
+      return true;
+    else return false;
+  }
+
 /**
  * KonfigurasiDatabase
  *
