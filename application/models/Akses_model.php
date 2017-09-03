@@ -23,7 +23,7 @@ class Akses_model extends CI_Model{
     $akses['url_referrer'] = $data['url'];
     $akses['request_uri'] = $_SERVER['REQUEST_URI'];
     $akses['client_ip'] = get_client_ip_server();
-    $akses['external_ip'] = $data['external_ip'];
+    if (!empty($data['external_ip'])) $akses['external_ip'] = $data['external_ip'];
     $akses['opensid_version'] = (isset($data['version']) ? $data['version'] : '1.9');
     $akses['tgl'] = $data['tgl_ubah'];
     $out2 = $this->db->insert('akses',$akses);
