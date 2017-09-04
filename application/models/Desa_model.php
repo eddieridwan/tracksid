@@ -159,8 +159,13 @@ class Desa_model extends CI_Model{
 
   private function _get_filtered_query()
   {
+    $filtered_query = $this->_get_main_query();
+    if($this->input->post('is_local') !== null AND $this->input->post('is_local') !== '')
+    {
+      $filtered_query .= " AND is_local = ".$this->input->post('is_local');
+    }
     $sSearch = $_POST['search']['value'];
-    $filtered_query = $this->_get_main_query()."AND (nama_desa LIKE '%".$sSearch."%' or nama_kecamatan LIKE '%".$sSearch."%' or nama_kabupaten LIKE '%".$sSearch."%' or nama_provinsi LIKE '%".$sSearch."%') ";
+    $filtered_query .= " AND (nama_desa LIKE '%".$sSearch."%' or nama_kecamatan LIKE '%".$sSearch."%' or nama_kabupaten LIKE '%".$sSearch."%' or nama_provinsi LIKE '%".$sSearch."%') ";
     return $filtered_query;
   }
 
@@ -173,18 +178,17 @@ class Desa_model extends CI_Model{
 
   function get_datatables()
   {
-      $qry = "SELECT * ".$this->_get_filtered_query();
-      if(isset($_POST['order'])) // here order processing
-      {
-        $sort_by = $this->column_order[$_POST['order']['0']['column']];
-        $sort_type = $_POST['order']['0']['dir'];
-        $qry .= " ORDER BY ".$sort_by." ".$sort_type;
-      }
-     if($_POST['length'] != -1)
-       $qry .= " LIMIT ".$_POST['start'].", ".$_POST['length'];
-     $query = $this->db->query($qry);
-     return $query->result_array();
-
+    $qry = "SELECT * ".$this->_get_filtered_query();
+    if(isset($_POST['order'])) // here order processing
+    {
+      $sort_by = $this->column_order[$_POST['order']['0']['column']];
+      $sort_type = $_POST['order']['0']['dir'];
+      $qry .= " ORDER BY ".$sort_by." ".$sort_type;
+    }
+    if($_POST['length'] != -1)
+     $qry .= " LIMIT ".$_POST['start'].", ".$_POST['length'];
+    $query = $this->db->query($qry);
+    return $query->result_array();
   }
 
   function count_filtered()

@@ -6,7 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Desa Pengguna OpenSID</title>
-    <link href="<?php echo base_url('assets/datatables/css/jquery.dataTables.min.css')?>" rel="stylesheet">
+    <link href="<?php echo base_url('assets/bootstrap/css/bootstrap.min.css')?>" rel="stylesheet">
+    <link href="<?php echo base_url('assets/datatables/css/dataTables.bootstrap.min.css')?>" rel="stylesheet">
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -23,10 +24,30 @@
             <?php endif; ?>
         </h1>
 
-        <h3>Data Desa</h3>
-        <br />
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title" >Filter</h3>
+            </div>
+            <div class="panel-body">
+                <form id="form-filter" class="form-horizontal">
+                    <div class="form-group">
+                        <label for="is_local" class="col-sm-2 control-label">Jenis Server</label>
+                        <div class="col-sm-4">
+                            <?php echo $form_server; ?>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="LastName" class="col-sm-2 control-label"></label>
+                        <div class="col-sm-4">
+                            <button type="button" id="btn-filter" class="btn btn-primary">Filter</button>
+                            <button type="button" id="btn-reset" class="btn btn-default">Reset</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
 
-        <table id="table" class="display" cellspacing="0" width="100%">
+        <table id="table" class="table table-striped table-bordered" cellspacing="0" width="100%">
             <thead>
                 <tr>
                     <th>No</th>
@@ -58,7 +79,9 @@
     </div>
 
 <script src="<?php echo base_url('assets/jquery/jquery-2.2.3.min.js')?>"></script>
+<script src="<?php echo base_url('assets/bootstrap/js/bootstrap.min.js')?>"></script>
 <script src="<?php echo base_url('assets/datatables/js/jquery.dataTables.min.js')?>"></script>
+<script src="<?php echo base_url('assets/datatables/js/dataTables.bootstrap.min.js')?>"></script>
 
 
 <script type="text/javascript">
@@ -77,7 +100,10 @@ $(document).ready(function() {
         // Load data for the table's content from an Ajax source
         "ajax": {
             "url": "<?php echo site_url('laporan/ajax_list_desa')?>",
-            "type": "POST"
+            "type": "POST",
+            "data": function ( data ) {
+                data.is_local = $('#is_local').val();
+            }
         },
 
         //Set column definition initialisation properties.
@@ -97,6 +123,15 @@ $(document).ready(function() {
             table.search( this.value ).draw();
         }
     });
+
+    $('#btn-filter').click(function(){ //button filter event click
+        table.ajax.reload();  //just reload table
+    });
+    $('#btn-reset').click(function(){ //button reset event click
+        $('#form-filter')[0].reset();
+        table.ajax.reload();  //just reload table
+    });
+
 });
 
 </script>

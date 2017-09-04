@@ -21,7 +21,16 @@ class Laporan extends CI_Controller {
     // $data['links'] = $data_desa['links'];
     // $data['offset'] = $offset;
     // $this->load->view('list_desa', $data);
-    $this->load->view('ajax_list_desa');
+
+    $this->load->helper('url');
+    $this->load->helper('form');
+
+    $opt = array('' => 'Semua',
+      '1' => 'Offline',
+      '0' => 'Online'
+    );
+    $data['form_server'] = form_dropdown('',$opt,'','id="is_local" class="form-control"');
+    $this->load->view('ajax_list_desa', $data);
   }
 
   public function test_email(){
