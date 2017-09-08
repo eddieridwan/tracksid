@@ -26,6 +26,10 @@ class Desa_model extends CI_Model{
     // https://ubuntuforums.org/showthread.php?t=2086550
     $sql = "ALTER TABLE desa AUTO_INCREMENT = 1";
     $this->db->query($sql);
+    $data['nama_provinsi'] = $this->_normalkan_spasi($data['nama_provinsi']);
+    $data['nama_kabupaten'] = $this->_normalkan_spasi($data['nama_kabupaten']);
+    $data['nama_kecamatan'] = $this->_normalkan_spasi($data['nama_kecamatan']);
+    $data['nama_desa'] = $this->_normalkan_spasi($data['nama_desa']);
     $data['id'] = $this->_desa_baru($data);
     if (empty($data['id'])){
       $data['is_local'] = is_local($data['url']) ? '1' : '0';
@@ -40,6 +44,10 @@ class Desa_model extends CI_Model{
     $data['version'] = $version;
     $data['external_ip'] = $external_ip;
    return $hasil." ".$out;
+  }
+
+  private function _normalkan_spasi($str){
+    return trim(preg_replace('/\s+/', ' ', $str));
   }
 
   private function _desa_baru($data){
@@ -136,6 +144,8 @@ class Desa_model extends CI_Model{
        ) {
       $abaikan = true;
     }
+    if (preg_match('/sid.bangundesa.info|demosid.opensid.info/', $data['url']))
+      $abaikan = true;
     return $abaikan;
   }
 
