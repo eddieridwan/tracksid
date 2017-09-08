@@ -2,8 +2,9 @@
 
 class Desa_model extends CI_Model{
 
-  var $table = 'customers';
+  var $table = 'desa';
   var $column_order = array(null, 'nama_desa','nama_kecamatan','nama_kabupaten','nama_provinsi','url_referrer','opensid_version','tgl'); //set column field database for datatable orderable
+  var $column_order_kabupaten = array(null, 'nama_kabupaten','nama_provinsi','is_local','jumlah'); //set column field database for datatable orderable
   var $column_search = array('nama_desa','nama_kecamatan','nama_kabupaten','nama_provinsi'); //set column field database for datatable searchable
   var $order = array('id' => 'asc'); // default order
 
@@ -205,6 +206,45 @@ class Desa_model extends CI_Model{
     $query    = $this->db->query($sql);
     $row      = $query->row_array();
     return $row['jml'];
+  }
+
+  private function _filtered_kabupaten_query(){
+    $filtered_query = "1";
+    if($this->input->post('is_local') !== null AND $this->input->post('is_local') !== '')
+    {
+      $filtered_query .= " AND is_local = ".$this->input->post('is_local');
+    }
+    $sSearch = $_POST['search']['value'];
+    $filtered_query .= " AND (nama_kabupaten LIKE '%".$sSearch."%' OR nama_provinsi LIKE '%".$sSearch."%')";
+    return $filtered_query;
+  }
+
+  function count_filtered_kabupaten()
+  {
+    $jumlah = $this->db->select('count(DISTINCT nama_kabupaten, nama_provinsi, is_local) as jumlah')->from('desa')->where($this->_filtered_kabupaten_query())->get()->row()->jumlah;
+    return $jumlah;
+  }
+
+  public function count_all_kabupaten()
+  {
+    $jumlah = $this->db->select('count(DISTINCT nama_kabupaten, nama_provinsi, is_local) as jumlah')->from('desa')->get()->row()->jumlah;
+    return $jumlah;
+  }
+
+  function profil_kabupaten(){
+    $this->db->select('nama_provinsi, nama_kabupaten, is_local, count(*) as jumlah')->from('desa')->where($this->_filtered_kabupaten_query());
+
+    if(isset($_POST['order'])) // here order processing
+    {
+      $sort_by = $this->column_order_kabupaten[$_POST['order']['0']['column']];
+      $sort_type = $_POST['order']['0']['dir'];
+      $this->db->order_by($sort_by." ".$sort_type);
+    }
+    if($_POST['length'] != -1)
+      $this->db->limit($_POST['length'], $_POST['start']);
+
+    $data = $this->db->group_by(array('nama_provinsi', 'nama_kabupaten', 'is_local'))->get()->result_array();
+    return $data;
   }
 
   private function email($subject, $message, $to="eddie.ridwan@gmail.com"){

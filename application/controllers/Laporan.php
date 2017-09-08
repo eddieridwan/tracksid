@@ -24,13 +24,49 @@ class Laporan extends CI_Controller {
 
     $this->load->helper('url');
     $this->load->helper('form');
-
     $opt = array('' => 'Semua',
       '1' => 'Offline',
       '0' => 'Online'
     );
     $data['form_server'] = form_dropdown('',$opt,'','id="is_local" class="form-control"');
     $this->load->view('ajax_list_desa', $data);
+  }
+
+  function profil_kabupaten(){
+    $this->load->helper('url');
+    $this->load->helper('form');
+    $opt = array('' => 'Semua',
+      '1' => 'Offline',
+      '0' => 'Online'
+    );
+    $data['form_server'] = form_dropdown('',$opt,'','id="is_local" class="form-control"');
+    $this->load->view('profil_kabupaten', $data);
+  }
+
+  public function ajax_profil_kabupaten()
+  {
+    $list = $this->desa_model->profil_kabupaten();
+    $data = array();
+    $no = $_POST['start'];
+    foreach ($list as $desa) {
+      $no++;
+      $row = array();
+      $row[] = $no;
+      $row[] = $desa['nama_kabupaten'];
+      $row[] = $desa['nama_provinsi'];
+      $row[] = ($desa['is_local'] == 0) ? '<i class="fa fa-external-link"></i> Online' : 'Offline';
+      $row[] = $desa['jumlah'];
+      $data[] = $row;
+    }
+
+    $output = array(
+            "draw" => $_POST['draw'],
+            "recordsTotal" => $this->desa_model->count_all_kabupaten(),
+            "recordsFiltered" => $this->desa_model->count_filtered_kabupaten(),
+            "data" => $data,
+        );
+    //output to json format
+    echo json_encode($output);
   }
 
   public function test_email(){
