@@ -16,7 +16,7 @@ class Desa_model extends CI_Model{
 
   public function insert(&$data){
     $url = $data['url'];
-    $data['url'] = parse_url($url, PHP_URL_HOST);
+    $data['url'] = preg_replace('/^www\./', '', parse_url($url, PHP_URL_HOST));
     $version = $data['version'];
     $external_ip = $data['external_ip'];
     unset($data['version']);
