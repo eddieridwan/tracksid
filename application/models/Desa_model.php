@@ -32,7 +32,7 @@ class Desa_model extends CI_Model{
     $data['nama_desa'] = $this->_normalkan_spasi($data['nama_desa']);
     $data['id'] = $this->_desa_baru($data);
     if (empty($data['id'])){
-      $data['is_local'] = is_local($data['url']) ? '1' : '0';
+      $data['is_local'] = (is_local($data['url']) or is_local($data['ip_address'])) ? '1' : '0';
       $out = $this->db->insert('desa', $data);
       $data['id'] = $this->db->insert_id();
       $this->email_github($data);
@@ -74,7 +74,7 @@ class Desa_model extends CI_Model{
       "nama_kabupaten" => strtolower($data['nama_kabupaten']),
       "nama_provinsi" => strtolower($data['nama_provinsi'])
       );
-    if (is_local($data['url'])) {
+    if (is_local($data['url']) or is_local($data['ip_address'])) {
       $cek_desa = array_merge($cek_desa, array("is_local" => '1'));
     } else
       $cek_desa = array_merge($cek_desa, array("url" => $data['url'], "is_local" => '0'));
