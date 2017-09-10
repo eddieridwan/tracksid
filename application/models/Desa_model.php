@@ -77,7 +77,7 @@ class Desa_model extends CI_Model{
     if (is_local($data['url'])) {
       $cek_desa = array_merge($cek_desa, array("is_local" => '1'));
     } else
-      $cek_desa = array_merge($cek_desa, array("ip_address" => $data['ip_address'], "is_local" => '0'));
+      $cek_desa = array_merge($cek_desa, array("url" => $data['url'], "is_local" => '0'));
     $id = $this->db->select('id')->where($cek_desa)->get('desa')->row()->id;
     return $id;
   }
