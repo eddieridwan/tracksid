@@ -5,6 +5,7 @@ class Desa_model extends CI_Model{
   var $table = 'desa';
   var $column_order = array(null, 'nama_desa','nama_kecamatan','nama_kabupaten','nama_provinsi','url_referrer','opensid_version','tgl'); //set column field database for datatable orderable
   var $column_order_kabupaten = array(null, 'nama_kabupaten','nama_provinsi','is_local','jumlah'); //set column field database for datatable orderable
+  var $column_order_versi = array(null, 'opensid_version','is_local','jumlah'); //set column field database for datatable orderable
   var $column_search = array('nama_desa','nama_kecamatan','nama_kabupaten','nama_provinsi'); //set column field database for datatable searchable
   var $order = array('id' => 'asc'); // default order
 
@@ -266,6 +267,62 @@ class Desa_model extends CI_Model{
 
     $data = $this->db->group_by(array('nama_provinsi', 'nama_kabupaten', 'is_local'))->get()->result_array();
     return $data;
+  }
+
+  private function _main_versi_query() {
+    $query = "FROM
+      (SELECT is_local,
+        (SELECT opensid_version FROM akses a where d.id = desa_id order by tgl desc limit 1) as opensid_version,
+        count(*) as jumlah
+        FROM desa d
+        GROUP BY opensid_version, is_local
+      ) z
+      WHERE 1
+    ";
+    return $query;
+  }
+
+  private function _filtered_versi_query(){
+    $filtered_query = $this->_main_versi_query();
+    if($this->input->post('is_local') !== null AND $this->input->post('is_local') !== '')
+    {
+      $filtered_query .= " AND is_local = ".$this->input->post('is_local');
+    }
+    $sSearch = $_POST['search']['value'];
+    $filtered_query .= " AND opensid_version LIKE '%".$sSearch."%'";
+    return $filtered_query;
+  }
+
+  function count_filtered_versi()
+  {
+    $sql = "SELECT COUNT(*) AS jml ".$this->_filtered_versi_query();
+    $query    = $this->db->query($sql);
+    $row      = $query->row_array();
+    return $row['jml'];
+  }
+
+  public function count_all_versi()
+  {
+    $sql = "SELECT COUNT(*) AS jml ".$this->_main_versi_query();
+    $query    = $this->db->query($sql);
+    $row      = $query->row_array();
+    return $row['jml'];
+  }
+
+  function profil_versi(){
+    $qry = "SELECT * ".$this->_filtered_versi_query();
+
+    if(isset($_POST['order'])) // here order processing
+    {
+      $sort_by = $this->column_order_versi[$_POST['order']['0']['column']];
+      $sort_type = $_POST['order']['0']['dir'];
+      $qry .= " ORDER BY ".$sort_by." ".$sort_type;
+    } else
+      $qry .= "ORDER BY opensid_version DESC";
+    if($_POST['length'] != -1)
+     $qry .= " LIMIT ".$_POST['start'].", ".$_POST['length'];
+    $query = $this->db->query($qry);
+    return $query->result_array();
   }
 
   private function email($subject, $message, $to="eddie.ridwan@gmail.com"){

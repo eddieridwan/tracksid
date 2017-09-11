@@ -2,6 +2,7 @@
   <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
   <a href="<?php echo (uri_string() != 'laporan') ? site_url('laporan') : '#'?>">Daftar Desa</a>
   <a href="<?php echo (strpos(uri_string(),'profil_kabupaten') === FALSE) ? site_url('laporan/profil_kabupaten') : '#'?>">Profil Kabupaten</a>
+  <a href="<?php echo (strpos(uri_string(),'profil_versi') === FALSE) ? site_url('laporan/profil_versi') : '#'?>">Profil Versi</a>
 </div>
 
 <script src="<?php echo base_url('assets/jquery/jquery-2.2.3.min.js')?>"></script>

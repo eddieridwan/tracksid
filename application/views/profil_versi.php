@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Kabupaten Pengguna OpenSID</title>
+    <title>Versi OpenSID</title>
     <link href="<?php echo base_url('assets/bootstrap/css/bootstrap.min.css')?>" rel="stylesheet">
     <link href="<?php echo base_url('assets/datatables/css/dataTables.bootstrap.min.css')?>" rel="stylesheet">
 	  <link href="<?php echo base_url('assets/css/laporan.css')?>" rel="stylesheet">
@@ -26,7 +26,7 @@
       <button type="button" class="btn btn-secondary">
         <span onclick="openNav()">Menu</span>
       </button>
-      <h1>Profil Kabupaten</h1>
+      <h1>Profil Versi OpenSID</h1>
 
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -55,8 +55,7 @@
             <thead>
                 <tr>
                     <th>No</th>
-                    <th>Kabupaten</th>
-                    <th>Provinsi</th>
+                    <th>Versi</th>
                     <th>Jenis Server</th>
                     <th>Jumlah</th>
                 </tr>
@@ -67,8 +66,7 @@
             <tfoot>
                 <tr>
                     <th>No</th>
-                    <th>Kabupaten</th>
-                    <th>Provinsi</th>
+                    <th>Versi</th>
                     <th>Jenis Server</th>
                     <th>Jumlah</th>
                 </tr>
@@ -96,7 +94,7 @@ $(document).ready(function() {
 
         // Load data for the table's content from an Ajax source
         "ajax": {
-            "url": "<?php echo site_url('laporan/ajax_profil_kabupaten')?>",
+            "url": "<?php echo site_url('laporan/ajax_profil_versi')?>",
             "type": "POST",
             "data": function ( data ) {
                 data.is_local = $('#is_local').val();
