@@ -103,13 +103,12 @@ class Laporan extends CI_Controller {
       $row[] = $desa['nama_kecamatan'];
       $row[] = $desa['nama_kabupaten'];
       $row[] = $desa['nama_provinsi'];
-      $row[] = $this->_show_url($desa['url_referrer']);
+      $row[] = $this->_show_url($desa['list_url']);
       $row[] = $desa['opensid_version'];
       $row[] = $desa['tgl'];
 
       $data[] = $row;
     }
-
     $output = array(
             "draw" => $_POST['draw'],
             "recordsTotal" => $this->desa_model->count_all(),
@@ -120,13 +119,16 @@ class Laporan extends CI_Controller {
     echo json_encode($output);
   }
 
-  private function _show_url($url) {
-    if (empty($url)) return '';
-    elseif (is_local($url)) return $url;
-    else {
-      $html = "<a href='http://$url' target='_blank'>$url</a>";
-      return $html;
+  private function _show_url($list_url) {
+    if (empty($list_url)) return '';
+
+    $html = "";
+    foreach (explode(',', $list_url) as $url) {
+      $html .= is_local($url) ? $url : "<a href='http://$url' target='_blank'>$url</a>";
+      $html .= ',';
     }
+    $html = rtrim($html, ',');
+    return $html;
   }
 
 

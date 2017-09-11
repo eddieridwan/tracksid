@@ -3,7 +3,7 @@
 class Desa_model extends CI_Model{
 
   var $table = 'desa';
-  var $column_order = array(null, 'nama_desa','nama_kecamatan','nama_kabupaten','nama_provinsi','url_referrer','opensid_version','tgl'); //set column field database for datatable orderable
+  var $column_order = array(null, 'nama_desa','nama_kecamatan','nama_kabupaten','nama_provinsi',null,'opensid_version','tgl'); //set column field database for datatable orderable
   var $column_order_kabupaten = array(null, 'nama_kabupaten','nama_provinsi','is_local','jumlah'); //set column field database for datatable orderable
   var $column_search = array('nama_desa','nama_kecamatan','nama_kabupaten','nama_provinsi'); //set column field database for datatable searchable
   var $order = array('id' => 'asc'); // default order
@@ -154,16 +154,16 @@ class Desa_model extends CI_Model{
   private function _get_main_query()
   {
     $main_sql = "FROM
-      (SELECT d.*,
-        (SELECT url_referrer FROM akses WHERE d.id = desa_id AND url_referrer IS NOT NULL ORDER BY tgl DESC LIMIT 1) as url_referrer,
-        (SELECT tgl FROM akses WHERE d.id = desa_id AND url_referrer IS NOT NULL ORDER BY tgl DESC LIMIT 1) as tgl,
-        (SELECT opensid_version FROM akses WHERE d.id = desa_id AND url_referrer IS NOT NULL ORDER BY tgl DESC LIMIT 1) as opensid_version,
-        (SELECT client_ip FROM akses WHERE d.id = desa_id AND url_referrer IS NOT NULL ORDER BY tgl DESC LIMIT 1) as client_ip
+      (SELECT DISTINCT nama_desa, nama_kecamatan, nama_kabupaten, nama_provinsi, is_local,
+        (SELECT GROUP_CONCAT(dd.url) FROM desa dd WHERE d.nama_desa = dd.nama_desa AND d.nama_kecamatan = dd.nama_kecamatan AND d.nama_kabupaten = dd.nama_kabupaten AND d.nama_provinsi = dd.nama_provinsi AND d.is_local = dd.is_local) AS list_url,
+        (SELECT tgl FROM akses LEFT JOIN desa dd ON dd.id = desa_id WHERE d.nama_desa = dd.nama_desa AND d.nama_kecamatan = dd.nama_kecamatan AND d.nama_kabupaten = dd.nama_kabupaten AND d.nama_provinsi = dd.nama_provinsi AND d.is_local = dd.is_local ORDER BY tgl DESC LIMIT 1) AS tgl,
+        (SELECT opensid_version FROM akses JOIN desa dd ON dd.id= desa_id WHERE d.nama_desa = dd.nama_desa AND d.nama_kecamatan = dd.nama_kecamatan AND d.nama_kabupaten = dd.nama_kabupaten AND d.nama_provinsi = dd.nama_provinsi AND d.is_local = dd.is_local ORDER BY tgl DESC LIMIT 1) AS opensid_version
         FROM desa d
-        WHERE NOT d.nama_provinsi = '' AND d.nama_provinsi NOT LIKE '%NT13%' AND d.nama_kabupaten NOT LIKE '%Bar4t%'
-        ORDER BY d.nama_provinsi, d.nama_kabupaten, d.nama_kecamatan
+        ORDER BY d.nama_provinsi, d.nama_kabupaten, d.nama_kecamatan, d.nama_desa
       ) x
-      WHERE NOT url_referrer ='' ";
+      WHERE 1
+    ";
+
     $main_sql .= $this->_akses_query();
     return $main_sql;
   }
@@ -183,7 +183,7 @@ class Desa_model extends CI_Model{
   // Hanya laporkan desa yang situsnya diakses dalam 3 bulan terakhir
   private function _akses_query()
   {
-    $sql = " AND TIMESTAMPDIFF(MONTH, tgl_ubah, NOW()) <= 2 ";
+    $sql = " AND TIMESTAMPDIFF(MONTH, tgl, NOW()) <= 2 ";
     return $sql;
   }
 
@@ -204,7 +204,7 @@ class Desa_model extends CI_Model{
 
   function count_filtered()
   {
-    $sql = "SELECT COUNT(id) AS jml ".$this->_get_filtered_query();
+    $sql = "SELECT COUNT(*) AS jml ".$this->_get_filtered_query();
     $query    = $this->db->query($sql);
     $row      = $query->row_array();
     return $row['jml'];
@@ -212,7 +212,7 @@ class Desa_model extends CI_Model{
 
   public function count_all()
   {
-    $sql = "SELECT COUNT(id) AS jml ".$this->_get_main_query();
+    $sql = "SELECT COUNT(*) AS jml ".$this->_get_main_query();
     $query    = $this->db->query($sql);
     $row      = $query->row_array();
     return $row['jml'];
