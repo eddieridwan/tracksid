@@ -53,18 +53,33 @@ class Desa_model extends CI_Model{
   private function _desa_baru($data){
     /*
       Dibuat entri di tabel desa untuk setiap kombinasi:
-        1. Nama desa, nama kec, nama kab, nama prov, ip_address jika online (is_local = FALSE)
-        2. Nama desa, nama kec, nama kab, nama prov, is_local = TRUE
-      Cara ini tidak menjamin setiap entri mewakili desa yang sebenarnya, karena bisa saja:
-      a. Database contoh/pelatihan/demo menggunakan nama desa sebenarnya di localhost, sehingga akan tergabung dengan entri database offline untuk desa tersebut
-      b. Database contoh/pelatihan/demo menggunakan nama desa sebenarnya di online, sehingga akan mempunyai entri terpisah, dan akan tampak seperti ada lebih dari satu database online untuk desa tersebut
-      c. Database contoh/pelatihan/demo menggunakan nama desa yang sebenarnya tidak ada, sehingga akan tampak adanya desa yang tidak benar
-      d. Nama desa/kec/kab/prov diubah (mis karena salah ejaan) akan tersimpan sebagai desa terpisah, sehingga akan tampak beberapa entri untuk desa tersebut dengan ejaan yang berbeda
-      e. Database desa pindah hosting dengan ip_address yang berbeda, sehingga akan tampak lebih dari satu database online untuk desa tersebut.
+        1. Nama desa, nama kec, nama kab, nama prov, is_local = FALSE (untuk online)
+        2. Nama desa, nama kec, nama kab, nama prov, is_local = TRUE (untuk offline)
+      Dengan cara ini, setiap entri berisi data akses terakhir untuk masing2 offline
+      dan online.
 
-      Untuk kasus (d) dan (e), entri yang salah/kadaluarsa akan terfilter dari laporan jika tidak diakses lagi dalam masa 2 bulan.
+      Untuk offline maupun online, akses terakhir bisa saja dari:
+      a. Server desa sebenarnya
+      b. Server contoh/pelatihan/demo yang menggunakan nama desa tersebut
+      c. Server backup dari desa sebenarnya
 
-      TODO: Untuk kasus (b) dan (c), nanti akan difilter dari laporan dengan mengidentifikasi ip_address atau url (jika online) yang merupakan server contoh/pelatihan/demo.
+      Cara ini menjamin maksimum ada satu entri offline dan online untuk setiap desa.
+
+      Entri desa 'salah', yaitu desa yang sebenarnya tidak ada atau tampak sebagai duplikat,
+      bisa terjadi, karena:
+      a. penulisan nama desa/kecamatan/kabupaten/provinsi sebagai percobaan/contoh,
+      b. penulisan nama desa/kecamatan/kabupaten/provinsi salah dan diubah
+
+      Cara ini dianggap memadai, karena:
+      a. Untuk offline, yang tidak bisa diakses melalui internet,
+         sumber akses terakhir tidak penting
+      b. Untuk online, diperkirakan akan jarang ada yang menggunakan nama desa lain,
+         kecuali situs demo yang diabaikan (tidak direkam)
+      c. Desa 'salah' atau 'duplikat' akan terfilter dari laporan jika tidak diakses lagi
+         dalam masa 2 bulan.
+
+      Karena tabel akses berisi rincian setiap akses yang direkam, laporan rincian akses
+      bisa ditampilkan apabila perlu.
 
       TODO: Jangka panjang, akan digunakan daftar desa baku, sehingga tidak akan ada entri untuk desa yang sebenarnya tidak ada atau tertulis salah.
     */
@@ -77,7 +92,7 @@ class Desa_model extends CI_Model{
     if (is_local($data['url']) or is_local($data['ip_address'])) {
       $cek_desa = array_merge($cek_desa, array("is_local" => '1'));
     } else
-      $cek_desa = array_merge($cek_desa, array("url" => $data['url'], "is_local" => '0'));
+      $cek_desa = array_merge($cek_desa, array("is_local" => '0'));
     $id = $this->db->select('id')->where($cek_desa)->get('desa')->row()->id;
     return $id;
   }
@@ -155,15 +170,11 @@ class Desa_model extends CI_Model{
   {
     $main_sql = "FROM
       (SELECT d.*,
-        (SELECT url_referrer FROM akses WHERE d.id = desa_id AND url_referrer IS NOT NULL ORDER BY tgl DESC LIMIT 1) as url_referrer,
-        (SELECT tgl FROM akses WHERE d.id = desa_id AND url_referrer IS NOT NULL ORDER BY tgl DESC LIMIT 1) as tgl,
-        (SELECT opensid_version FROM akses WHERE d.id = desa_id AND url_referrer IS NOT NULL ORDER BY tgl DESC LIMIT 1) as opensid_version,
-        (SELECT client_ip FROM akses WHERE d.id = desa_id AND url_referrer IS NOT NULL ORDER BY tgl DESC LIMIT 1) as client_ip
+        (SELECT opensid_version FROM akses WHERE d.id = desa_id ORDER BY tgl DESC LIMIT 1) as opensid_version
         FROM desa d
-        WHERE NOT d.nama_provinsi = '' AND d.nama_provinsi NOT LIKE '%NT13%' AND d.nama_kabupaten NOT LIKE '%Bar4t%'
-        ORDER BY d.nama_provinsi, d.nama_kabupaten, d.nama_kecamatan
+        ORDER BY d.nama_provinsi, d.nama_kabupaten, d.nama_kecamatan, d.nama_desa
       ) x
-      WHERE NOT url_referrer ='' ";
+      WHERE 1 ";
     $main_sql .= $this->_akses_query();
     return $main_sql;
   }

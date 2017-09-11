@@ -103,9 +103,9 @@ class Laporan extends CI_Controller {
       $row[] = $desa['nama_kecamatan'];
       $row[] = $desa['nama_kabupaten'];
       $row[] = $desa['nama_provinsi'];
-      $row[] = $this->_show_url($desa['url_referrer']);
+      $row[] = $this->_show_url($desa['url']);
       $row[] = $desa['opensid_version'];
-      $row[] = $desa['tgl'];
+      $row[] = $desa['tgl_ubah'];
 
       $data[] = $row;
     }
