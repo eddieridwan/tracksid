@@ -174,7 +174,6 @@ class Desa_model extends CI_Model{
       (SELECT d.*,
         (SELECT opensid_version FROM akses WHERE d.id = desa_id ORDER BY tgl DESC LIMIT 1) as opensid_version
         FROM desa d
-        ORDER BY d.nama_provinsi, d.nama_kabupaten, d.nama_kecamatan, d.nama_desa
       ) x
       WHERE 1 ";
     $main_sql .= $this->_akses_query();
@@ -208,6 +207,8 @@ class Desa_model extends CI_Model{
       $sort_by = $this->column_order[$_POST['order']['0']['column']];
       $sort_type = $_POST['order']['0']['dir'];
       $qry .= " ORDER BY ".$sort_by." ".$sort_type;
+    } else {
+      $qry .= " ORDER BY nama_provinsi, nama_kabupaten, nama_kecamatan, nama_desa";
     }
     if($_POST['length'] != -1)
      $qry .= " LIMIT ".$_POST['start'].", ".$_POST['length'];
