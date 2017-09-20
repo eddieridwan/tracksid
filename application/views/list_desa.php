@@ -29,7 +29,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
       <th>Provinsi</th>
       <th>Web</th>
       <th>Versi</th>
-      <th>Akses Terakhir</th>
+      <th>Tgl Rekam</th>
     </tr>
     <?php foreach ($list_desa as $urut => $desa) : ?>
       <tr>

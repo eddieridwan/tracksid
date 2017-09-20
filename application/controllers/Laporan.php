@@ -54,8 +54,8 @@ class Laporan extends Public_Controller {
       $row[] = $no;
       $row[] = $desa['nama_kabupaten'];
       $row[] = $desa['nama_provinsi'];
-      $row[] = ($desa['is_local'] == 0) ? '<i class="fa fa-external-link"></i> Online' : 'Offline';
-      $row[] = $desa['jumlah'];
+      $row[] = $desa['offline'];
+      $row[] = $desa['online'];
       $data[] = $row;
     }
 
@@ -141,7 +141,7 @@ class Laporan extends Public_Controller {
       $row[] = $desa['nama_provinsi'];
       $row[] = $this->_show_url($desa['url']);
       $row[] = $desa['opensid_version'];
-      $row[] = $desa['tgl_ubah'];
+      $row[] = $desa['tgl_rekam'];
 
       $data[] = $row;
     }

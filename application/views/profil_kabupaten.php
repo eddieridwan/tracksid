@@ -28,37 +28,14 @@
       </button>
       <h1>Profil Kabupaten</h1>
 
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title" >Filter</h3>
-            </div>
-            <div class="panel-body">
-                <form id="form-filter" class="form-horizontal">
-                    <div class="form-group">
-                        <label for="is_local" class="col-sm-2 control-label">Jenis Server</label>
-                        <div class="col-sm-4">
-                            <?php echo $form_server; ?>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="LastName" class="col-sm-2 control-label"></label>
-                        <div class="col-sm-4">
-                            <button type="button" id="btn-filter" class="btn btn-primary">Filter</button>
-                            <button type="button" id="btn-reset" class="btn btn-default">Reset</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-
         <table id="table" class="table table-striped table-bordered" cellspacing="0" width="100%">
             <thead>
                 <tr>
                     <th>No</th>
                     <th>Kabupaten</th>
                     <th>Provinsi</th>
-                    <th>Jenis Server</th>
-                    <th>Jumlah</th>
+                    <th>Server Offline</th>
+                    <th>Server Online</th>
                 </tr>
             </thead>
             <tbody>
@@ -69,8 +46,8 @@
                     <th>No</th>
                     <th>Kabupaten</th>
                     <th>Provinsi</th>
-                    <th>Jenis Server</th>
-                    <th>Jumlah</th>
+                    <th>Server Offline</th>
+                    <th>Server Online</th>
                 </tr>
             </tfoot>
         </table>

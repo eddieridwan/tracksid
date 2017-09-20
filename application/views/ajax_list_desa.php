@@ -64,7 +64,7 @@
                     <th>Provinsi</th>
                     <th>Web</th>
                     <th>Versi</th>
-                    <th>Akses Terakhir</th>
+                    <th>Tgl Rekam</th>
                 </tr>
             </thead>
             <tbody>
@@ -79,7 +79,7 @@
                     <th>Provinsi</th>
                     <th>Web</th>
                     <th>Versi</th>
-                    <th>Akses Terakhir</th>
+                    <th>Tgl Rekam</th>
                 </tr>
             </tfoot>
         </table>
