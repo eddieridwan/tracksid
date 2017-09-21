@@ -63,7 +63,8 @@
                     <th>Kabupaten</th>
                     <th>Provinsi</th>
                     <th>Web</th>
-                    <th>Versi</th>
+                    <th>Versi Offline</th>
+                    <th>Versi Online</th>
                     <th>Tgl Rekam</th>
                 </tr>
             </thead>
@@ -78,7 +79,8 @@
                     <th>Kabupaten</th>
                     <th>Provinsi</th>
                     <th>Web</th>
-                    <th>Versi</th>
+                    <th>Versi Offline</th>
+                    <th>Versi Online</th>
                     <th>Tgl Rekam</th>
                 </tr>
             </tfoot>

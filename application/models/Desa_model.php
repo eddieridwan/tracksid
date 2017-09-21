@@ -3,7 +3,7 @@
 class Desa_model extends CI_Model{
 
   var $table = 'desa';
-  var $column_order = array(null, 'nama_desa','nama_kecamatan','nama_kabupaten','nama_provinsi','url_referrer','opensid_version','tgl_rekam'); //set column field database for datatable orderable
+  var $column_order = array(null, 'nama_desa','nama_kecamatan','nama_kabupaten','nama_provinsi','web','offline','online','tgl_rekam'); //set column field database for datatable orderable
   var $column_order_kabupaten = array(null, 'nama_kabupaten','nama_provinsi','offline','online'); //set column field database for datatable orderable
   var $column_order_versi = array(null, 'opensid_version','offline','online'); //set column field database for datatable orderable
   var $column_search = array('nama_desa','nama_kecamatan','nama_kabupaten','nama_provinsi'); //set column field database for datatable searchable
@@ -171,12 +171,25 @@ class Desa_model extends CI_Model{
 
   private function _get_main_query()
   {
+
     $main_sql = "FROM
-      (SELECT d.*,
-        (SELECT opensid_version FROM akses WHERE d.id = desa_id ORDER BY tgl DESC LIMIT 1) as opensid_version
-        FROM desa d
-      ) x
-      WHERE 1 ";
+      (SELECT nama_desa, nama_kecamatan, nama_kabupaten, nama_provinsi,
+        max(tgl_ubah) as tgl_ubah,
+        max(web) as web,
+        min(tgl_rekam) as tgl_rekam,
+        max(offline) as offline,
+        max(online) as online
+      FROM
+      (SELECT nama_desa, nama_kecamatan, nama_kabupaten, nama_provinsi, DATE_FORMAT(tgl_rekam, '%Y-%m-%d') as tgl_rekam, is_local, tgl_ubah,
+        CASE WHEN is_local = 0 THEN url ELSE '' END as web,
+        (SELECT opensid_version
+          FROM akses WHERE d.id = desa_id and d.is_local = 0 ORDER BY tgl DESC LIMIT 1) as online,
+        (SELECT opensid_version
+          FROM akses WHERE d.id = desa_id and d.is_local = 1 ORDER BY tgl DESC LIMIT 1) as offline
+      FROM desa d) z
+      GROUP By nama_desa, nama_kecamatan, nama_kabupaten, nama_provinsi) w
+      WHERE 1
+    ";
     $main_sql .= $this->_akses_query();
     return $main_sql;
   }
@@ -184,9 +197,15 @@ class Desa_model extends CI_Model{
   private function _get_filtered_query()
   {
     $filtered_query = $this->_get_main_query();
-    if($this->input->post('is_local') !== null AND $this->input->post('is_local') !== '')
-    {
-      $filtered_query .= " AND is_local = ".$this->input->post('is_local');
+    if($this->input->post('is_local') !== null) {
+      switch ($this->input->post('is_local')) {
+        case '0':
+          $filtered_query .= " AND online <> '' ";
+          break;
+        case '1':
+          $filtered_query .= " AND offline <> '' ";
+          break;
+      }
     }
     $sSearch = $_POST['search']['value'];
     $filtered_query .= " AND (nama_desa LIKE '%".$sSearch."%' or nama_kecamatan LIKE '%".$sSearch."%' or nama_kabupaten LIKE '%".$sSearch."%' or nama_provinsi LIKE '%".$sSearch."%') ";
@@ -219,22 +238,30 @@ class Desa_model extends CI_Model{
 
   function count_filtered()
   {
-    $sql = "SELECT COUNT(id) AS jml ".$this->_get_filtered_query();
-    $query    = $this->db->query($sql);
-    $row      = $query->row_array();
-    return $row['jml'];
+    $sql = "SELECT COUNT(*) AS jml ".$this->_get_filtered_query();
+    $jml = $this->db->query($sql)->row()->jml;
+    return $jml;
   }
 
   public function count_all()
   {
-    $sql = "SELECT COUNT(id) AS jml ".$this->_get_main_query();
-    $query    = $this->db->query($sql);
-    $row      = $query->row_array();
-    return $row['jml'];
+    $sql = "SELECT COUNT(*) AS jml ".$this->_get_main_query();
+    $jml = $this->db->query($sql)->row()->jml;
+    return $jml;
   }
 
   private function _filtered_kabupaten_query(){
     $filtered_query = $this->_main_kabupaten_query();
+    if($this->input->post('is_local') !== null) {
+      switch ($this->input->post('is_local')) {
+        case '0':
+          $filtered_query .= " AND online > 0 ";
+          break;
+        case '1':
+          $filtered_query .= " AND offline > 0 ";
+          break;
+      }
+    }
     $sSearch = $_POST['search']['value'];
     $filtered_query .= " AND (nama_kabupaten LIKE '%".$sSearch."%' OR nama_provinsi LIKE '%".$sSearch."%')";
     return $filtered_query;

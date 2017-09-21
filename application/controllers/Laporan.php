@@ -139,8 +139,9 @@ class Laporan extends Public_Controller {
       $row[] = $desa['nama_kecamatan'];
       $row[] = $desa['nama_kabupaten'];
       $row[] = $desa['nama_provinsi'];
-      $row[] = $this->_show_url($desa['url']);
-      $row[] = $desa['opensid_version'];
+      $row[] = empty($desa['web']) ? 'localhost' : $this->_show_url($desa['web']);
+      $row[] = $desa['offline'];
+      $row[] = $desa['online'];
       $row[] = $desa['tgl_rekam'];
 
       $data[] = $row;
