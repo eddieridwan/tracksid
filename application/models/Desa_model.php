@@ -5,7 +5,7 @@ class Desa_model extends CI_Model{
   var $table = 'desa';
   var $column_order = array(null, 'nama_desa','nama_kecamatan','nama_kabupaten','nama_provinsi','url_referrer','opensid_version','tgl_rekam'); //set column field database for datatable orderable
   var $column_order_kabupaten = array(null, 'nama_kabupaten','nama_provinsi','offline','online'); //set column field database for datatable orderable
-  var $column_order_versi = array(null, 'opensid_version','is_local','jumlah'); //set column field database for datatable orderable
+  var $column_order_versi = array(null, 'opensid_version','offline','online'); //set column field database for datatable orderable
   var $column_search = array('nama_desa','nama_kecamatan','nama_kabupaten','nama_provinsi'); //set column field database for datatable searchable
   var $order = array('id' => 'asc'); // default order
 
@@ -286,13 +286,15 @@ class Desa_model extends CI_Model{
   }
 
   private function _main_versi_query() {
-    $query = "FROM
-      (SELECT is_local,
-        (SELECT opensid_version FROM akses a where d.id = desa_id order by tgl desc limit 1) as opensid_version,
-        count(*) as jumlah
-        FROM desa d
-        GROUP BY opensid_version, is_local
-      ) z
+    $query = " FROM
+      (select opensid_version,
+        sum(case when is_local = 1 then 1 else 0 end) offline,
+        sum(case when is_local = 0 then 1 else 0 end) online
+      from
+        (SELECT is_local,
+          (SELECT opensid_version FROM akses a where d.id = desa_id order by tgl desc limit 1) as opensid_version
+        FROM desa d) z
+      group by opensid_version) w
       WHERE 1
     ";
     return $query;
@@ -300,9 +302,15 @@ class Desa_model extends CI_Model{
 
   private function _filtered_versi_query(){
     $filtered_query = $this->_main_versi_query();
-    if($this->input->post('is_local') !== null AND $this->input->post('is_local') !== '')
-    {
-      $filtered_query .= " AND is_local = ".$this->input->post('is_local');
+    if($this->input->post('is_local') !== null) {
+      switch ($this->input->post('is_local')) {
+        case '0':
+          $filtered_query .= " AND online > 0 ";
+          break;
+        case '1':
+          $filtered_query .= " AND offline > 0 ";
+          break;
+      }
     }
     $sSearch = $_POST['search']['value'];
     $filtered_query .= " AND opensid_version LIKE '%".$sSearch."%'";

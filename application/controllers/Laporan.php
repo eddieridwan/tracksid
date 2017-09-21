@@ -90,8 +90,8 @@ class Laporan extends Public_Controller {
       $row = array();
       $row[] = $no;
       $row[] = $desa['opensid_version'];
-      $row[] = ($desa['is_local'] == 0) ? '<i class="fa fa-external-link"></i> Online' : 'Offline';
-      $row[] = $desa['jumlah'];
+      $row[] = $desa['offline'];
+      $row[] = $desa['online'];
       $data[] = $row;
     }
 

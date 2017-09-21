@@ -56,8 +56,8 @@
                 <tr>
                     <th>No</th>
                     <th>Versi</th>
-                    <th>Jenis Server</th>
-                    <th>Jumlah</th>
+                    <th>Server Offline</th>
+                    <th>Server Online</th>
                 </tr>
             </thead>
             <tbody>
@@ -67,8 +67,8 @@
                 <tr>
                     <th>No</th>
                     <th>Versi</th>
-                    <th>Jenis Server</th>
-                    <th>Jumlah</th>
+                    <th>Server Offline</th>
+                    <th>Server Online</th>
                 </tr>
             </tfoot>
         </table>
