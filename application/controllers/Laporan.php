@@ -143,6 +143,7 @@ class Laporan extends Public_Controller {
       $row[] = $desa['offline'];
       $row[] = $desa['online'];
       $row[] = $desa['tgl_rekam'];
+      $row[] = $desa['jenis']; // jenis tidak ditampilkan
 
       $data[] = $row;
     }

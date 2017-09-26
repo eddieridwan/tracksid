@@ -178,9 +178,10 @@ class Desa_model extends CI_Model{
         max(web) as web,
         min(tgl_rekam) as tgl_rekam,
         max(offline) as offline,
-        max(online) as online
+        max(online) as online,
+        max(jenis) as jenis
       FROM
-      (SELECT nama_desa, nama_kecamatan, nama_kabupaten, nama_provinsi, DATE_FORMAT(tgl_rekam, '%Y-%m-%d') as tgl_rekam, is_local, tgl_ubah,
+      (SELECT nama_desa, nama_kecamatan, nama_kabupaten, nama_provinsi, DATE_FORMAT(tgl_rekam, '%Y-%m-%d') as tgl_rekam, is_local, tgl_ubah, jenis,
         CASE WHEN is_local = 0 THEN url ELSE '' END as web,
         (SELECT opensid_version
           FROM akses WHERE d.id = desa_id and d.is_local = 0 ORDER BY tgl DESC LIMIT 1) as online,
