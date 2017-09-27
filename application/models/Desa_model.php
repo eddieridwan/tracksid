@@ -13,6 +13,7 @@ class Desa_model extends CI_Model{
     parent::__construct();
     $this->load->database();
     $this->load->library('user_agent');
+    $this->load->model('provinsi_model');
   }
 
   public function insert(&$data){
@@ -28,6 +29,9 @@ class Desa_model extends CI_Model{
     $sql = "ALTER TABLE desa AUTO_INCREMENT = 1";
     $this->db->query($sql);
     $data['nama_provinsi'] = $this->_normalkan_spasi($data['nama_provinsi']);
+    $data['nama_provinsi'] = $this->provinsi_model->nama_baku($data['nama_provinsi']);
+    if (!$this->provinsi_model->cek_baku($data['nama_provinsi']))
+      $data['jenis'] = 2; // jenis = 2 jika nama provinsi tidak baku
     $data['nama_kabupaten'] = $this->_normalkan_spasi($data['nama_kabupaten']);
     $data['nama_kecamatan'] = $this->_normalkan_spasi($data['nama_kecamatan']);
     $data['nama_desa'] = $this->_normalkan_spasi($data['nama_desa']);
