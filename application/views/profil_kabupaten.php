@@ -76,6 +76,10 @@
         </table>
     </div>
 
+    <form action="<?php echo site_url("laporan")?>" method="POST" id="show_desa">
+        <input name='is_local' type="hidden">
+        <input name='kab' type="hidden">
+    </form>
 
 <script src="<?php echo base_url('assets/bootstrap/js/bootstrap.min.js')?>"></script>
 <script src="<?php echo base_url('assets/datatables/js/jquery.dataTables.min.js')?>"></script>
@@ -130,6 +134,12 @@ $(document).ready(function() {
     });
 
 });
+
+function goto_desa(kab, jenis_server) {
+    $('input[name=is_local').val(jenis_server);
+    $('input[name=kab').val(kab);
+    $('form#show_desa').submit();
+}
 
 </script>
 

@@ -6,22 +6,13 @@ class Laporan extends Public_Controller {
   function __construct(){
     parent::__construct();
     $this->load->model('desa_model');
+    $this->load->model('kabupaten_model');
     $this->load->helper('url');
     session_start();
   }
 
   public function index($offset=0)
   {
-    // if(isset($_SESSION['filter']))
-    //   $data['filter'] = $_SESSION['filter'];
-    // else $data['filter'] = '';
-
-    // $data_desa = $this->desa_model->list_desa($offset);
-    // $data['list_desa'] = $data_desa['list_desa'];
-    // $data['links'] = $data_desa['links'];
-    // $data['offset'] = $offset;
-    // $this->load->view('list_desa', $data);
-
     $this->load->helper('url');
     $this->load->helper('form');
     $opt = array('' => 'Semua',
@@ -29,6 +20,15 @@ class Laporan extends Public_Controller {
       '0' => 'Online'
     );
     $data['form_server'] = form_dropdown('',$opt,'','id="is_local" class="form-control"');
+    $list_kab = $this->kabupaten_model->list_nama();
+    $kab[''] = 'Semua kabupaten';
+    foreach ($list_kab as $nama_kab){
+      $kab[$nama_kab['nama_kabupaten']] = $nama_kab['nama_kabupaten'];
+    }
+    $data['form_kab'] = form_dropdown('',$kab,'','id="kab" class="form-control"');
+
+    $data['is_local'] = $this->input->post('is_local');
+    $data['kab'] = $this->input->post('kab');
     $this->load->view('ajax_list_desa', $data);
   }
 
@@ -54,8 +54,8 @@ class Laporan extends Public_Controller {
       $row[] = $no;
       $row[] = $desa['nama_kabupaten'];
       $row[] = $desa['nama_provinsi'];
-      $row[] = $desa['offline'];
-      $row[] = $desa['online'];
+      $row[] = $this->_show_desa_kabupaten($desa['nama_kabupaten'], 1, $desa['offline']);
+      $row[] = $this->_show_desa_kabupaten($desa['nama_kabupaten'], 0, $desa['online']);
       $data[] = $row;
     }
 
@@ -67,6 +67,11 @@ class Laporan extends Public_Controller {
         );
     //output to json format
     echo json_encode($output);
+  }
+
+  function _show_desa_kabupaten($kab, $jenis_server, $jml){
+    $html = '<a href="javascript:;" onclick="goto_desa(' . "'$kab',$jenis_server);" . '">' . $jml . '</a>';
+    return $html;
   }
 
   function profil_versi(){

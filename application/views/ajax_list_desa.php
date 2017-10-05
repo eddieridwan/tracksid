@@ -34,6 +34,11 @@
             <?php endif; ?>
         </h1>
 
+        <div>
+            <input type="hidden" name="arg_id_local" value="<?php echo $is_local?>">
+            <input type="hidden" name="arg_kab" value="<?php echo $kab?>">
+        </div>
+
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title" >Filter</h3>
@@ -44,6 +49,12 @@
                         <label for="is_local" class="col-sm-2 control-label">Jenis Server</label>
                         <div class="col-sm-4">
                             <?php echo $form_server; ?>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="kab" class="col-sm-2 control-label">Kabupaten</label>
+                        <div class="col-sm-4">
+                            <?php echo $form_kab; ?>
                         </div>
                     </div>
                     <div class="form-group">
@@ -101,6 +112,9 @@ var table;
 
 $(document).ready(function() {
 
+    $('#is_local').val($('input[name=arg_id_local').val());
+    $('#kab').val($('input[name=arg_kab').val());
+
     //datatables
     table = $('#table').DataTable({
 
@@ -114,6 +128,7 @@ $(document).ready(function() {
             "type": "POST",
             "data": function ( data ) {
                 data.is_local = $('#is_local').val();
+                data.kab = $('#kab').val();
             }
         },
 
