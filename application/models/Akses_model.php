@@ -9,6 +9,9 @@ class Akses_model extends CI_Model{
   }
 
   public function insert($data){
+    // Hanya insert kalau belum ada entri untuk hari ini;
+    if ($this->update_hari_sama($data)) return "akses: update hari sama ".$data['id'];
+
     // $data['id'] adalah desa_id, diambil di Desa_model->insert
     $desa_id = $data['id'];
 
@@ -28,6 +31,19 @@ class Akses_model extends CI_Model{
     $akses['tgl'] = $data['tgl_ubah'];
     $out2 = $this->db->insert('akses',$akses);
     return "akses: ".$out2;
+  }
+
+  /*
+   * Batasi hanya satu entri per hari per desa. Update entri jika ada akses untuk hari yang sama
+  */
+  public function update_hari_sama($data){
+    $query = $this->db->where('desa_id',$data['id'])->where('DATE(tgl)',date('Y-m-d'))
+      ->limit(1)->get('akses');
+    if ($query->num_rows() > 0) {
+      $akses = $query->row();
+      $this->db->where('id',$akses->id)->update('akses',array('tgl',$data['tgl_ubah']));
+      return true;
+    } else return false;
   }
 
 }
