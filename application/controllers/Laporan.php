@@ -26,6 +26,11 @@ class Laporan extends Public_Controller {
       $kab[$nama_kab['nama_kabupaten']] = $nama_kab['nama_kabupaten'];
     }
     $data['form_kab'] = form_dropdown('',$kab,'','id="kab" class="form-control"');
+    $akses = array('' => 'Semua',
+      '2' => 'Sejak dua bulan yang lalu',
+      '1' => 'Sebelum dua bulan yang lalu'
+    );
+    $data['form_akses'] = form_dropdown('',$akses,'','id="akses" class="form-control"');
 
     $data['is_local'] = $this->input->post('is_local');
     $data['kab'] = $this->input->post('kab');
@@ -147,7 +152,7 @@ class Laporan extends Public_Controller {
       $row[] = empty($desa['web']) ? 'localhost' : $this->_show_url($desa['web']);
       $row[] = $desa['offline'];
       $row[] = $desa['online'];
-      $row[] = $desa['tgl_rekam'];
+      $row[] = $desa['tgl_ubah'];
       $row[] = $desa['jenis']; // jenis tidak ditampilkan
 
       $data[] = $row;

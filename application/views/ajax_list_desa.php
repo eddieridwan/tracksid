@@ -17,6 +17,7 @@
     <![endif]-->
     <style type="text/css">
         tr.highlight { background-color: orange !important; }
+        tr.nonaktif { background-color: #F9E79F !important; }
     </style>
     </head>
 <body>
@@ -58,6 +59,12 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label for="akses" class="col-sm-2 control-label">Akses Terakhir</label>
+                        <div class="col-sm-4">
+                            <?php echo $form_akses; ?>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label for="LastName" class="col-sm-2 control-label"></label>
                         <div class="col-sm-4">
                             <button type="button" id="btn-filter" class="btn btn-primary">Filter</button>
@@ -79,7 +86,7 @@
                     <th>Web</th>
                     <th>Versi Offline</th>
                     <th>Versi Online</th>
-                    <th>Tgl Rekam</th>
+                    <th>Akses Terakhir</th>
                 </tr>
             </thead>
             <tbody>
@@ -95,7 +102,7 @@
                     <th>Web</th>
                     <th>Versi Offline</th>
                     <th>Versi Online</th>
-                    <th>Tgl Rekam</th>
+                    <th>Akses Terakhir</th>
                 </tr>
             </tfoot>
         </table>
@@ -129,6 +136,7 @@ $(document).ready(function() {
             "data": function ( data ) {
                 data.is_local = $('#is_local').val();
                 data.kab = $('#kab').val();
+                data.akses = $('#akses').val();
             }
         },
 
@@ -147,6 +155,11 @@ $(document).ready(function() {
         "createdRow": function ( row, data, index ) {
             if ( data[9] == '2' ) {
                 $(row).addClass('highlight');
+            };
+            var d = new Date();
+            tgl_nonaktif = d.setMonth(d.getMonth()-2);
+            if ( Date.parse(data[8]) < tgl_nonaktif ) {
+                $(row).addClass('nonaktif');
             }
         }
     });

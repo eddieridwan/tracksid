@@ -3,7 +3,7 @@
 class Desa_model extends CI_Model{
 
   var $table = 'desa';
-  var $column_order = array(null, 'nama_desa','nama_kecamatan','nama_kabupaten','nama_provinsi','web','offline','online','tgl_rekam'); //set column field database for datatable orderable
+  var $column_order = array(null, 'nama_desa','nama_kecamatan','nama_kabupaten','nama_provinsi','web','offline','online','tgl_ubah'); //set column field database for datatable orderable
   var $column_order_kabupaten = array(null, 'nama_kabupaten','nama_provinsi','offline','online'); //set column field database for datatable orderable
   var $column_order_versi = array(null, 'opensid_version','offline','online'); //set column field database for datatable orderable
   var $column_search = array('nama_desa','nama_kecamatan','nama_kabupaten','nama_provinsi'); //set column field database for datatable searchable
@@ -103,48 +103,6 @@ class Desa_model extends CI_Model{
     return $id;
   }
 
-  private function filter_sql(){
-    if(isset($_SESSION['filter'])){
-      $filter = $_SESSION['filter'];
-      if ($filter == 1)
-        $filter_sql = " AND NOT url_referrer LIKE '%localhost%' AND NOT url_referrer LIKE '%192.168%' AND NOT url_referrer LIKE '%127.0.0.1%' AND NOT url_referrer LIKE '%/10.%'";
-      else
-        $filter_sql = " AND (url_referrer LIKE '%localhost%' OR url_referrer LIKE '%192.168%' OR url_referrer LIKE '%127.0.0.1%' OR url_referrer LIKE '%/10.%')";
-    return $filter_sql;
-    }
-  }
-
-  function paging($offset=0,$main_sql){
-
-    $sql      = "SELECT COUNT(id) AS jml ".$main_sql;
-    $query    = $this->db->query($sql);
-    $row      = $query->row_array();
-    $jml_data = $row['jml'];
-
-    $this->load->library('pagination');
-    $cfg["base_url"] = base_url() . "index.php/laporan/index";
-    $cfg['page']     = $offset;
-    $cfg['per_page'] = 20;
-    // $cfg['per_page'] = $_SESSION['per_page'];
-    $cfg['total_rows'] = $jml_data;
-    $this->pagination->initialize($cfg);
-    return $this->pagination;
-  }
-
-  public function list_desa($offset=0){
-    $main_sql = $this->_get_main_query();
-    $main_sql .= $this->filter_sql();
-    $this->paging($offset, $main_sql);
-    $paging_sql = ' LIMIT ' .$offset. ',' .$this->pagination->per_page;
-    $sql = "SELECT * ".$main_sql;
-    $sql .= $paging_sql;
-
-    $query = $this->db->query($sql);
-    $data['list_desa'] = $query->result_array();
-    $data['links'] = $this->pagination->create_links();
-    return $data;
-  }
-
   /*
     Jangan rekam, jika:
     - ada kolom nama wilayah kosong
@@ -185,7 +143,7 @@ class Desa_model extends CI_Model{
         max(online) as online,
         max(jenis) as jenis
       FROM
-      (SELECT nama_desa, nama_kecamatan, nama_kabupaten, nama_provinsi, DATE_FORMAT(tgl_rekam, '%Y-%m-%d') as tgl_rekam, is_local, tgl_ubah, jenis,
+      (SELECT nama_desa, nama_kecamatan, nama_kabupaten, nama_provinsi, DATE_FORMAT(tgl_rekam, '%Y-%m-%d') as tgl_rekam, is_local, DATE_FORMAT(tgl_ubah, '%Y-%m-%d') as tgl_ubah, jenis,
         CASE WHEN is_local = 0 THEN url ELSE '' END as web,
         (SELECT opensid_version
           FROM akses WHERE d.id = desa_id and d.is_local = 0 ORDER BY tgl DESC LIMIT 1) as online,
@@ -193,9 +151,8 @@ class Desa_model extends CI_Model{
           FROM akses WHERE d.id = desa_id and d.is_local = 1 ORDER BY tgl DESC LIMIT 1) as offline
       FROM desa d) z
       GROUP By nama_desa, nama_kecamatan, nama_kabupaten, nama_provinsi) w
-      WHERE 1
+      WHERE 1=1
     ";
-    $main_sql .= $this->_akses_query();
     return $main_sql;
   }
 
@@ -216,15 +173,28 @@ class Desa_model extends CI_Model{
     if(!empty($kab)) {
         $filtered_query .= " AND nama_kabupaten = '{$kab}'";
     }
+    if(!empty($this->input->post('akses'))) {
+      $filtered_query .= $this->_akses_query($this->input->post('akses'));
+    }
     $sSearch = $_POST['search']['value'];
     $filtered_query .= " AND (nama_desa LIKE '%".$sSearch."%' or nama_kecamatan LIKE '%".$sSearch."%' or nama_kabupaten LIKE '%".$sSearch."%' or nama_provinsi LIKE '%".$sSearch."%') ";
     return $filtered_query;
   }
 
-  // Hanya laporkan desa yang situsnya diakses dalam 3 bulan terakhir
-  private function _akses_query()
+  // Hanya laporkan desa yang situsnya diakses dalam 2 bulan terakhir
+  private function _akses_query($akses)
   {
-    $sql = " AND TIMESTAMPDIFF(MONTH, tgl_ubah, NOW()) <= 2 ";
+    switch ($akses) {
+      case '1':
+        $sql = " AND TIMESTAMPDIFF(MONTH, tgl_ubah, NOW()) > 1 ";
+        break;
+      case '2':
+        $sql = " AND TIMESTAMPDIFF(MONTH, tgl_ubah, NOW()) <= 1 ";
+        break;
+      default:
+        $sql = "";
+        break;
+    }
     return $sql;
   }
 
