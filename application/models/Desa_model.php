@@ -173,8 +173,9 @@ class Desa_model extends CI_Model{
     if(!empty($kab)) {
         $filtered_query .= " AND nama_kabupaten = '{$kab}'";
     }
-    if(!empty($this->input->post('akses'))) {
-      $filtered_query .= $this->_akses_query($this->input->post('akses'));
+    $akses = $this->input->post('akses');
+    if(!empty($akses)) {
+      $filtered_query .= $this->_akses_query($akses);
     }
     $sSearch = $_POST['search']['value'];
     $filtered_query .= " AND (nama_desa LIKE '%".$sSearch."%' or nama_kecamatan LIKE '%".$sSearch."%' or nama_kabupaten LIKE '%".$sSearch."%' or nama_provinsi LIKE '%".$sSearch."%') ";
