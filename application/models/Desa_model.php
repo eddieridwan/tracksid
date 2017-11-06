@@ -135,7 +135,7 @@ class Desa_model extends CI_Model{
   {
 
     $main_sql = "FROM
-      (SELECT nama_desa, nama_kecamatan, nama_kabupaten, nama_provinsi,
+      (SELECT id, nama_desa, nama_kecamatan, nama_kabupaten, nama_provinsi,
         max(tgl_ubah) as tgl_ubah,
         max(web) as web,
         min(tgl_rekam) as tgl_rekam,
@@ -143,7 +143,7 @@ class Desa_model extends CI_Model{
         max(online) as online,
         max(jenis) as jenis
       FROM
-      (SELECT nama_desa, nama_kecamatan, nama_kabupaten, nama_provinsi, DATE_FORMAT(tgl_rekam, '%Y-%m-%d') as tgl_rekam, is_local, DATE_FORMAT(tgl_ubah, '%Y-%m-%d') as tgl_ubah, jenis,
+      (SELECT id, nama_desa, nama_kecamatan, nama_kabupaten, nama_provinsi, DATE_FORMAT(tgl_rekam, '%Y-%m-%d') as tgl_rekam, is_local, DATE_FORMAT(tgl_ubah, '%Y-%m-%d') as tgl_ubah, jenis,
         CASE WHEN is_local = 0 THEN url ELSE '' END as web,
         (SELECT opensid_version
           FROM akses WHERE d.id = desa_id and d.is_local = 0 ORDER BY tgl DESC LIMIT 1) as online,
@@ -290,6 +290,10 @@ class Desa_model extends CI_Model{
 
     $data = $this->db->query($qry)->result_array();
     return $data;
+  }
+
+  function hapus($id){
+    $this->db->where('id',$id)->delete('desa');
   }
 
   private function _main_versi_query() {
