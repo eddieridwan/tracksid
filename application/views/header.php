@@ -5,7 +5,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Site title</title>
+	<title><?php echo $title?></title>
 	<meta name="description" content="">
 	<meta name="keywords" content="">
 	<meta name="author" content="">
@@ -13,6 +13,8 @@
 	<!-- css -->
 	<link href="<?php echo base_url('assets/font-awesome/css/font-awesome.min.css') ?>" rel="stylesheet">
 	<link href="<?php echo base_url('assets/bootstrap/css/bootstrap.min.css') ?>" rel="stylesheet">
+  <link href="<?php echo base_url('assets/datatables/css/dataTables.bootstrap.min.css')?>" rel="stylesheet">
+  <link href="<?php echo base_url('assets/css/laporan.css')?>" rel="stylesheet">
 	<link href="<?php echo base_url('assets/css/style.css') ?>" rel="stylesheet">
 
 	<script src="<?php echo base_url('assets/jquery/jquery-3.1.1.js')?>"></script>
