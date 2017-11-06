@@ -5,15 +5,14 @@ class Laporan extends Public_Controller {
 
   function __construct(){
     parent::__construct();
+    session_start();
     $this->load->model('desa_model');
     $this->load->model('kabupaten_model');
     $this->load->helper('url');
-    session_start();
   }
 
   public function index($offset=0)
   {
-    $this->load->helper('url');
     $this->load->helper('form');
     $opt = array('' => 'Semua',
       '1' => 'Offline',
@@ -34,11 +33,13 @@ class Laporan extends Public_Controller {
 
     $data['is_local'] = $this->input->post('is_local');
     $data['kab'] = $this->input->post('kab');
+
+    $this->load->view('header');
     $this->load->view('ajax_list_desa', $data);
+    $this->load->view('footer');
   }
 
   function profil_kabupaten(){
-    $this->load->helper('url');
     $this->load->helper('form');
     $opt = array('' => 'Semua',
       '1' => 'Offline',
@@ -80,7 +81,6 @@ class Laporan extends Public_Controller {
   }
 
   function profil_versi(){
-    $this->load->helper('url');
     $this->load->helper('form');
     $opt = array('' => 'Semua',
       '1' => 'Offline',
