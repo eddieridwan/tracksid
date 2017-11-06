@@ -32,7 +32,12 @@
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand" href="<?= base_url() ?>">Pengguna OpenSID</a>
+					<a class="navbar-brand" href="<?php echo base_url() ?>">
+						Pengguna OpenSID
+	          <?php if (defined('ENVIRONMENT') AND ENVIRONMENT == 'development'): ?>
+	            <span style="background-color: orange;">(DEVELOPMENT)</span>
+	          <?php endif; ?>
+	        </a>
 				</div>
 				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 					<ul class="nav navbar-nav navbar-right">

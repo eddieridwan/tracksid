@@ -46,8 +46,10 @@ class Laporan extends Public_Controller {
       '0' => 'Online'
     );
     $data['form_server'] = form_dropdown('',$opt,'','id="is_local" class="form-control"');
+    $this->load->view('header');
     $this->load->view('profil_kabupaten', $data);
-  }
+    $this->load->view('footer');
+ }
 
   public function ajax_profil_kabupaten()
   {
@@ -87,7 +89,9 @@ class Laporan extends Public_Controller {
       '0' => 'Online'
     );
     $data['form_server'] = form_dropdown('',$opt,'','id="is_local" class="form-control"');
+    $this->load->view('header');
     $this->load->view('profil_versi', $data);
+    $this->load->view('footer');
   }
 
   public function ajax_profil_versi()
@@ -181,9 +185,7 @@ class Laporan extends Public_Controller {
   private function _aksi($desa_id){
     $str = '
       <div class="btn-group" role="group" aria-label="Aksi">
-        <button type="button" class="btn btn-secondary">
-          <a href="'.site_url("desa/hapus/$desa_id").'" class=""  title="Hapus Data"  target="confirm" message="Apakah Anda Yakin?" rel="window" header="Hapus Data"><span class="fa fa-trash"></span></a>
-        </button>
+        <a class="btn btn-secondary" data-toggle="confirmation" data-title="Hapus desa?" href="'.site_url("desa/hapus/$desa_id").'"><span class="fa fa-trash"></span></a>
       </div>
     ';
     return $str;

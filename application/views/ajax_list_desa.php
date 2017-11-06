@@ -23,15 +23,13 @@
     <?php $this->load->view('_laporan_nav'); ?>
 
     <div id="main" class="container">
+
       <!-- Use any element to open the sidenav -->
       <button type="button" class="btn btn-secondary">
         <span onclick="openNav()">Menu</span>
       </button>
         <h1 style="font-size:20pt">
             <span>Desa Pengguna OpenSID</span>
-            <?php if (defined('ENVIRONMENT') AND ENVIRONMENT == 'development'): ?>
-              <span style="background-color: orange;">(DEVELOPMENT)</span>
-            <?php endif; ?>
         </h1>
 
         <div>
