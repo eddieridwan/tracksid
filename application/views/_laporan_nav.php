@@ -5,7 +5,6 @@
   <a href="<?php echo (strpos(uri_string(),'profil_versi') === FALSE) ? site_url('laporan/profil_versi') : '#'?>">Profil Versi</a>
 </div>
 
-<script src="<?php echo base_url('assets/jquery/jquery-2.2.3.min.js')?>"></script>
 <script type="text/javascript">
 	/* Set the width of the side navigation to 250px and the left margin of the page content to 250px and add a black background color to body */
 	function openNav() {
