@@ -145,6 +145,7 @@ class Laporan extends Public_Controller {
       $no++;
       $row = array();
       $row[] = $no;
+      $row[] = $this->_aksi();
       $row[] = $desa['nama_desa'];
       $row[] = $desa['nama_kecamatan'];
       $row[] = $desa['nama_kabupaten'];
@@ -177,5 +178,15 @@ class Laporan extends Public_Controller {
     }
   }
 
+  private function _aksi(){
+    $str = '
+      <div class="btn-group" role="group" aria-label="Aksi">
+        <button type="button" class="btn btn-secondary">
+          <a href="'.site_url("desa/").'" class=""  title="Hapus Data"  target="confirm" message="Apakah Anda Yakin?" rel="window" header="Hapus Data"><span class="fa fa-trash"></span></a>
+        </button>
+      </div>
+    ';
+    return $str;
+  }
 
 }

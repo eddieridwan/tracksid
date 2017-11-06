@@ -11,8 +11,9 @@
 	<meta name="author" content="">
 
 	<!-- css -->
-	<link href="<?= base_url('assets/bootstrap/css/bootstrap.min.css') ?>" rel="stylesheet">
-	<link href="<?= base_url('assets/css/style.css') ?>" rel="stylesheet">
+	<link href="<?php echo base_url('assets/font-awesome/css/font-awesome.min.css') ?>" rel="stylesheet">
+	<link href="<?php echo base_url('assets/bootstrap/css/bootstrap.min.css') ?>" rel="stylesheet">
+	<link href="<?php echo base_url('assets/css/style.css') ?>" rel="stylesheet">
 
 	<!--[if lt IE 9]>
 		<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>

@@ -3,7 +3,7 @@
 class Desa_model extends CI_Model{
 
   var $table = 'desa';
-  var $column_order = array(null, 'nama_desa','nama_kecamatan','nama_kabupaten','nama_provinsi','web','offline','online','tgl_ubah'); //set column field database for datatable orderable
+  var $column_order = array(null, null, 'nama_desa','nama_kecamatan','nama_kabupaten','nama_provinsi','web','offline','online','tgl_ubah'); //set column field database for datatable orderable
   var $column_order_kabupaten = array(null, 'nama_kabupaten','nama_provinsi','offline','online'); //set column field database for datatable orderable
   var $column_order_versi = array(null, 'opensid_version','offline','online'); //set column field database for datatable orderable
   var $column_search = array('nama_desa','nama_kecamatan','nama_kabupaten','nama_provinsi'); //set column field database for datatable searchable
