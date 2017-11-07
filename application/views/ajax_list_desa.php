@@ -147,6 +147,12 @@ $(document).ready(function() {
         }
     });
 
+    // https://datatables.net/reference/event/draw
+    table.on( 'draw', function () {
+        // Aktifkan bootstrap-confirmation setelah data selesai ditampilkan;
+        $('[data-toggle="confirmation"]').confirmation();
+    } );
+
     // https://stackoverflow.com/questions/14619498/datatables-global-search-on-keypress-of-enter-key-instead-of-any-key-keypress
     $('#table_filter input').unbind();
     $('#table_filter input').bind('keyup', function(e) {
