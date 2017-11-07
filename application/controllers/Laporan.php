@@ -34,7 +34,8 @@ class Laporan extends Public_Controller {
     $data['is_local'] = $this->input->post('is_local');
     $data['kab'] = $this->input->post('kab');
 
-    $header['title'] = "Desa Pengguna OpenSID";
+    $header = new stdClass();
+    $header->title = "Desa Pengguna OpenSID";
     $this->load->view('header', $header);
     $this->load->view('ajax_list_desa', $data);
     $this->load->view('footer');
@@ -47,7 +48,8 @@ class Laporan extends Public_Controller {
       '0' => 'Online'
     );
     $data['form_server'] = form_dropdown('',$opt,'','id="is_local" class="form-control"');
-    $header['title'] = 'Kabupaten Pengguna OpenSID';
+    $header = new stdClass();
+    $header->title = 'Kabupaten Pengguna OpenSID';
     $this->load->view('header', $header);
     $this->load->view('profil_kabupaten', $data);
     $this->load->view('footer');
@@ -91,7 +93,8 @@ class Laporan extends Public_Controller {
       '0' => 'Online'
     );
     $data['form_server'] = form_dropdown('',$opt,'','id="is_local" class="form-control"');
-    $header['title'] = 'Versi OpenSID';
+    $header = new stdClass();
+    $header->title = 'Versi OpenSID';
     $this->load->view('header', $header);
     $this->load->view('profil_versi', $data);
     $this->load->view('footer');

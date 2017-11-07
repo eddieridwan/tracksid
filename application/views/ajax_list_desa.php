@@ -4,17 +4,19 @@
         tr.nonaktif { background-color: #F9E79F !important; }
     </style>
 
-    <?php $this->load->view('_laporan_nav'); ?>
+    <!-- <?php $this->load->view('_laporan_nav'); ?> -->
 
     <div id="main" class="container">
 
       <!-- Use any element to open the sidenav -->
-      <button type="button" class="btn btn-secondary">
+<!--       <button type="button" class="btn btn-secondary">
         <span onclick="openNav()">Menu</span>
       </button>
-        <h1 style="font-size:20pt">
-            <span>Desa Pengguna OpenSID</span>
-        </h1>
+ -->
+
+<button class="btn btn-default" data-toggle="confirmation">Confirmation</button>
+
+        <h2>Desa OpenSID</h2>
 
         <div>
             <input type="hidden" name="arg_id_local" value="<?php echo $is_local?>">
@@ -96,6 +98,8 @@
 var table;
 
 $(document).ready(function() {
+
+    $('[data-toggle="confirmation"]').confirmation();
 
     $('#is_local').val($('input[name=arg_id_local').val());
     $('#kab').val($('input[name=arg_kab').val());

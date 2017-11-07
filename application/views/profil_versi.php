@@ -1,14 +1,15 @@
 
 <?php defined('BASEPATH') OR exit('No direct script access allowed');?>
 
-    <?php $this->load->view('_laporan_nav'); ?>
+    <!-- <?php $this->load->view('_laporan_nav'); ?> -->
 
     <div id="main" class="container">
       <!-- Use any element to open the sidenav -->
-      <button type="button" class="btn btn-secondary">
+<!--       <button type="button" class="btn btn-secondary">
         <span onclick="openNav()">Menu</span>
       </button>
-      <h1>Profil Versi OpenSID</h1>
+ -->
+        <h2>Profil Versi OpenSID</h2>
 
         <div class="panel panel-default">
             <div class="panel-heading">

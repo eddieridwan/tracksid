@@ -29,3 +29,5 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 
 ## Configuration files
 config/*
+## Coba folder
+coba/*
