@@ -14,8 +14,6 @@
       </button>
  -->
 
-<button class="btn btn-default" data-toggle="confirmation">Confirmation</button>
-
         <h2>Desa OpenSID</h2>
 
         <div>
@@ -99,8 +97,6 @@ var table;
 
 $(document).ready(function() {
 
-    $('[data-toggle="confirmation"]').confirmation();
-
     $('#is_local').val($('input[name=arg_id_local').val());
     $('#kab').val($('input[name=arg_kab').val());
 
@@ -143,6 +139,11 @@ $(document).ready(function() {
             if ( Date.parse(data[9]) < tgl_nonaktif ) {
                 $(row).addClass('nonaktif');
             }
+        },
+
+        "initComplete": function(settings, json) {
+            // Aktifkan bootstrap-confirmation setelah data selesai dimuat;
+            $('[data-toggle="confirmation"]').confirmation();
         }
     });
 

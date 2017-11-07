@@ -190,11 +190,8 @@ class Laporan extends Public_Controller {
 
   private function _aksi($desa_id){
     $str = '
-      <button type="button" class="btn btn-default">
-        <a href="'.site_url("desa/hapus/$desa_id").'"><span class="fa fa-trash"></span></a>
-      </button>
+      <a class="btn btn-default" data-toggle="confirmation" data-href="'.site_url("desa/hapus/$desa_id").'"><span class="fa fa-trash"></span></a>
     ';
     return $str;
   }
-
 }
