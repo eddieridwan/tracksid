@@ -28,13 +28,8 @@ class Desa_model extends CI_Model{
     // https://ubuntuforums.org/showthread.php?t=2086550
     $sql = "ALTER TABLE desa AUTO_INCREMENT = 1";
     $this->db->query($sql);
-    $data['nama_provinsi'] = $this->_normalkan_spasi($data['nama_provinsi']);
-    $data['nama_provinsi'] = $this->provinsi_model->nama_baku($data['nama_provinsi']);
     if (!$this->provinsi_model->cek_baku($data['nama_provinsi']))
       $data['jenis'] = 2; // jenis = 2 jika nama provinsi tidak baku
-    $data['nama_kabupaten'] = $this->_normalkan_spasi($data['nama_kabupaten']);
-    $data['nama_kecamatan'] = $this->_normalkan_spasi($data['nama_kecamatan']);
-    $data['nama_desa'] = $this->_normalkan_spasi($data['nama_desa']);
     $data['id'] = $this->_desa_baru($data);
     if (empty($data['id'])){
       $data['is_local'] = (is_local($data['url']) or is_local($data['ip_address'])) ? '1' : '0';
@@ -55,8 +50,16 @@ class Desa_model extends CI_Model{
   /*
    * Normalkan nama wilayah. Hilangkan sebutan wilayah.
    */
+  function normalkan_nama(&$data){
+    $data['nama_provinsi'] = $this->_normalkan_spasi($data['nama_provinsi']);
+    $data['nama_provinsi'] = $this->provinsi_model->nama_baku($data['nama_provinsi']);
+    $data['nama_kabupaten'] = $this->_normalkan_spasi($data['nama_kabupaten']);
+    $data['nama_kecamatan'] = $this->_normalkan_spasi($data['nama_kecamatan']);
+    $data['nama_desa'] = $this->_normalkan_spasi($data['nama_desa']);
+  }
+
   private function _normalkan_spasi($str){
-    return trim(preg_replace('/\s+|desa\s+|nagari\s+|kecamatan\s+|kabupaten\s+/i', ' ', $str));
+    return trim(preg_replace('/^desa\s+|^nagari\s+|^kecamatan\s+|^kabupaten\s+|\s+desa\s+|\s+nagari\s+|\s+kecamatan\s+|\s+kabupaten\s+|\s+/i', ' ', $str));
   }
 
   private function _desa_baru($data){

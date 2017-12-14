@@ -15,6 +15,7 @@ class Track extends CI_Controller {
     echo "</pre>";
     $this->load->model('desa_model');
     $data = $_POST;
+    $this->desa_model->normalkan_nama($data);
     if($this->desa_model->abaikan($data)) return;
     $this->load->model('akses_model');
     $data['tgl_ubah'] = date('Y-m-d G:i:s');
