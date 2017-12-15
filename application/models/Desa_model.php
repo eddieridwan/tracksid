@@ -379,14 +379,15 @@ class Desa_model extends CI_Model{
 
   private function email_github($data){
     $message =
-      "Desa: ".$data['nama_desa']."\r\n".
-      "Kecamatan: ".$data['nama_kecamatan']."\r\n".
-      "Kabupaten: ".$data['nama_kabupaten']."\r\n".
-      "Provinsi: ".$data['nama_provinsi']."\r\n".
-      "Website: "."http://".$data['url']."\r\n";
+      "Desa: ".$data['nama_desa']."<br>\r\n".
+      "Kecamatan: ".$data['nama_kecamatan']."<br>\r\n".
+      "Kabupaten: ".$data['nama_kabupaten']."<br>\r\n".
+      "Provinsi: ".$data['nama_provinsi']."<br>\r\n".
+      "Website: "."http://".$data['url']."<br>\r\n";
     $this->load->library('email'); // Note: no $config param needed
     $this->email->from('opensid.server@gmail.com', 'Desa OpenSID');
-    $this->email->to("reply+0003cedb28a15af7509fdc8d2eea2ad81330dadac78af6e492cf0000000115b3c7f892a169ce0f03d3ca@reply.github.com");
+    $this->email->to("h2b7q6h0p6v3b3v8@opensid.slack.com");
+    // $this->email->to("reply+0003cedb28a15af7509fdc8d2eea2ad81330dadac78af6e492cf0000000115b3c7f892a169ce0f03d3ca@reply.github.com");
     $this->email->subject("Desa Pengguna OpenSID");
     $this->email->message($message);
     if ($this->email->send())
