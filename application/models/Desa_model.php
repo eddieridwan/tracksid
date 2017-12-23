@@ -14,6 +14,7 @@ class Desa_model extends CI_Model{
     $this->load->database();
     $this->load->library('user_agent');
     $this->load->model('provinsi_model');
+    $this->load->model('kabupaten_model');
   }
 
   public function insert(&$data){
@@ -28,7 +29,8 @@ class Desa_model extends CI_Model{
     // https://ubuntuforums.org/showthread.php?t=2086550
     $sql = "ALTER TABLE desa AUTO_INCREMENT = 1";
     $this->db->query($sql);
-    if (!$this->provinsi_model->cek_baku($data['nama_provinsi']))
+    if (!$this->provinsi_model->cek_baku($data['nama_provinsi']) OR
+        !$this->kabupaten_model->cek_baku($data['nama_kabupaten']))
       $data['jenis'] = 2; // jenis = 2 jika nama provinsi tidak baku
     $data['id'] = $this->_desa_baru($data);
     if (empty($data['id'])){
