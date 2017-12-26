@@ -15,6 +15,8 @@ class Migration_Create_tbl_regions extends CI_Migration
 
 	public function up()
 	{
+    // Import daftar wilayah dari Permendagri No. 56/2017 yang diambil dari
+    // https://github.com/edwin/database-wilayah-kemendagri
     $sql = file_get_contents(FCPATH."application/migrations/tbl_regions.sql");
 
     /*

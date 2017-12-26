@@ -27,7 +27,8 @@ class Laporan extends Public_Controller {
     $data['form_kab'] = form_dropdown('',$kab,'','id="kab" class="form-control"');
     $akses = array('' => 'Semua',
       '2' => 'Sejak dua bulan yang lalu',
-      '1' => 'Sebelum dua bulan yang lalu'
+      '1' => 'Sebelum dua bulan yang lalu',
+      '3' => 'Sebelum empat bulan yang lalu'
     );
     $data['form_akses'] = form_dropdown('',$akses,'','id="akses" class="form-control"');
 

@@ -190,7 +190,11 @@ class Desa_model extends CI_Model{
     return $filtered_query;
   }
 
-  // Hanya laporkan desa yang situsnya diakses dalam 2 bulan terakhir
+  /* Filter menurut tanggal akses terkahir.
+   * 1 = sebelum dua bulan yang lalu
+   * 2 = sejak dua bulan yang lalu
+   * 3 = sebelum embat bulan yang lalu
+  */
   private function _akses_query($akses)
   {
     switch ($akses) {
@@ -199,6 +203,9 @@ class Desa_model extends CI_Model{
         break;
       case '2':
         $sql = " AND TIMESTAMPDIFF(MONTH, tgl_ubah, NOW()) <= 1 ";
+        break;
+      case '3':
+        $sql = " AND TIMESTAMPDIFF(MONTH, tgl_ubah, NOW()) > 3 ";
         break;
       default:
         $sql = "";

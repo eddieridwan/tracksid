@@ -133,11 +133,12 @@ $(document).ready(function() {
         "createdRow": function ( row, data, index ) {
             if ( data[10] == '2' ) {
                 $(row).addClass('highlight');
-            };
-            var d = new Date();
-            tgl_nonaktif = d.setMonth(d.getMonth()-2);
-            if ( Date.parse(data[9]) < tgl_nonaktif ) {
-                $(row).addClass('nonaktif');
+            } else {
+                var d = new Date();
+                tgl_nonaktif = d.setMonth(d.getMonth()-2);
+                if ( Date.parse(data[9]) < tgl_nonaktif ) {
+                    $(row).addClass('nonaktif')
+                }
             }
         },
 
