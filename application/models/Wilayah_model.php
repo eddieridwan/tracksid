@@ -5,6 +5,10 @@
  */
 class Wilayah_model extends CI_Model
 {
+
+  var $column_order = array(null, 'region_code','nama_desa','nama_kecamatan','nama_kabupaten','nama_provinsi','opensid'); //set column field database for datatable orderable
+  var $column_search = array('nama_desa','nama_kecamatan','nama_kabupaten','nama_provinsi'); //set column field database for datatable searchable
+
   function __construct()
   {
     parent::__construct();
@@ -40,5 +44,65 @@ class Wilayah_model extends CI_Model
     // Tidak ada yg cocok
     return false;
   }
+
+  private function _get_main_query_desa()
+  {
+
+    $main_sql = "FROM
+      (select d.region_code as region_code,d.region_name as nama_desa,
+        (select r.region_name from tbl_regions r where r.region_code = substr(d.region_code,1,8)) as nama_kecamatan,
+        (select r.region_name from tbl_regions r where r.region_code = substr(d.region_code,1,5)) as nama_kabupaten,
+        (select r.region_name from tbl_regions r where r.region_code = substr(d.region_code,1,2)) as nama_provinsi
+      FROM
+      (select * from tbl_regions where char_length(region_code) = 13) d) z
+        WHERE 1=1
+    ";
+    return $main_sql;
+  }
+
+  private function _get_filtered_query_desa()
+  {
+    $filtered_query = $this->_get_main_query_desa();
+    $kab = $this->input->post('kab');
+    if(!empty($kab)) {
+        $filtered_query .= " AND nama_kabupaten = '{$kab}'";
+    }
+    $sSearch = $_POST['search']['value'];
+    $filtered_query .= " AND (nama_desa LIKE '%".$sSearch."%' or nama_kecamatan LIKE '%".$sSearch."%' or nama_kabupaten LIKE '%".$sSearch."%' or nama_provinsi LIKE '%".$sSearch."%') ";
+    return $filtered_query;
+  }
+
+  function list_desa()
+  {
+    $select = "SELECT * ";
+    $qry = $select.$this->_get_filtered_query_desa();
+    if(isset($_POST['order'])) // here order processing
+    {
+      $sort_by = $this->column_order[$_POST['order']['0']['column']];
+      $sort_type = $_POST['order']['0']['dir'];
+      $qry .= " ORDER BY ".$sort_by." ".$sort_type;
+    } else {
+      $qry .= " ORDER BY region_code";
+    }
+    if($_POST['length'] != -1)
+      $qry .= " LIMIT ".$_POST['start'].", ".$_POST['length'];
+    $query = $this->db->query($qry);
+    return $query->result_array();
+  }
+
+  function count_filtered_desa()
+  {
+    $sql = "SELECT COUNT(*) AS jml ".$this->_get_filtered_query_desa();
+    $jml = $this->db->query($sql)->row()->jml;
+    return $jml;
+  }
+
+  public function count_all_desa()
+  {
+    $sql = "SELECT COUNT(*) AS jml ".$this->_get_main_query_desa();
+    $jml = $this->db->query($sql)->row()->jml;
+    return $jml;
+  }
+
 
 }
