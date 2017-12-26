@@ -10,6 +10,7 @@ class Migration_Create_tbl_regions extends CI_Migration
     parent::__construct();
 		$this->load->dbforge();
     $this->load->database();
+    $this->load->model('wilayah_model');
 	}
 
 	public function up()
@@ -25,8 +26,22 @@ class Migration_Create_tbl_regions extends CI_Migration
     array_pop($sqls);
 
     foreach($sqls as $statement){
-        $statment = $statement . ";";
-        $this->db->query($statement);
+      $statment = $statement . ";";
+      $this->db->query($statement);
+    }
+    $this->db->close();
+    $this->load->database();
+
+    /*
+    Cek setiap desa, dan ubah jenis menjadi '2' jika nama wilayahnya
+    tidak ada di tbl_regions
+    */
+    $list_desa = $this->db->get('desa')->result_array();
+    foreach ($list_desa as $desa){
+      $betul_desa = $this->wilayah_model->cek_baku($desa);
+      if (!$betul_desa){
+        $this->db->where('id',$desa['id'])->update('desa',array('jenis'=>2));
+      }
     }
   }
 
