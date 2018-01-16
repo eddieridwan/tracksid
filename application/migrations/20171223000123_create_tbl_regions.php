@@ -28,7 +28,7 @@ class Migration_Create_tbl_regions extends CI_Migration
     array_pop($sqls);
 
     foreach($sqls as $statement){
-      $statment = $statement . ";";
+      $statement = $statement . ";";
       $this->db->query($statement);
     }
     $this->db->close();
