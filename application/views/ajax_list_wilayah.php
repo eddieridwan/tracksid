@@ -2,6 +2,7 @@
     <style type="text/css">
         tr.highlight { background-color: orange !important; }
         tr.nonaktif { background-color: #F9E79F !important; }
+        td.opensid { text-align: center; }
     </style>
 
     <!-- <?php $this->load->view('_laporan_nav'); ?> -->
@@ -96,6 +97,13 @@ $(document).ready(function() {
             }
         },
 
+        "aoColumnDefs": [
+            {
+                "sClass": "opensid",
+                "aTargets": [ 6 ]
+            }
+        ],
+
         //Set column definition initialisation properties.
         "columnDefs": [
             {
@@ -105,7 +113,7 @@ $(document).ready(function() {
         ],
 
         "createdRow": function ( row, data, index ) {
-            if ( data[7] != '' ) {
+            if ( data[6] != '-' ) {
                 $(row).addClass('opensid');
             }
         },

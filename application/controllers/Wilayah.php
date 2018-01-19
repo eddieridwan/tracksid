@@ -52,7 +52,7 @@ class Wilayah extends Public_Controller {
       $row[] = $desa['nama_kecamatan'];
       $row[] = $desa['nama_kabupaten'];
       $row[] = $desa['nama_provinsi'];
-      $row[] = '';
+      $row[] = $this->_get_desa_OpenSID($desa['desa_id']);
 
       $data[] = $row;
     }
@@ -65,6 +65,14 @@ class Wilayah extends Public_Controller {
         );
     //output to json format
     echo json_encode($output);
+  }
+
+  private function _get_desa_OpenSID($desa_id){
+    if (!empty($desa_id))
+      $str = '<span class="fa fa-check" style="font-size: larger; color: green;"></span></a>';
+    else
+      $str = '-';
+    return $str;
   }
 
 }

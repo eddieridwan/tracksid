@@ -6,7 +6,7 @@
 class Wilayah_model extends CI_Model
 {
 
-  var $column_order = array(null, 'region_code','nama_desa','nama_kecamatan','nama_kabupaten','nama_provinsi','opensid'); //set column field database for datatable orderable
+  var $column_order = array(null, 'region_code','nama_desa','nama_kecamatan','nama_kabupaten','nama_provinsi', 'desa_id'); //set column field database for datatable orderable
   var $column_search = array('nama_desa','nama_kecamatan','nama_kabupaten','nama_provinsi'); //set column field database for datatable searchable
 
   function __construct()
@@ -15,6 +15,9 @@ class Wilayah_model extends CI_Model
     $this->load->database();
   }
 
+  /*
+    @return false atau tbl_regions.id
+  */
   function cek_baku($data)
   {
     /*
@@ -39,7 +42,8 @@ class Wilayah_model extends CI_Model
       $hasil = $this->db->where('region_code',$wilayah['parent_code'])->where('region_name',$data['nama_provinsi'])->get('tbl_regions');
       if ($hasil->num_rows() == 0) continue;
       // Semua data wilayah cocok
-      return true;
+      // Kembalikan id tbl_regions
+      return $kandidat['id'];
     }
     // Tidak ada yg cocok
     return false;
@@ -49,12 +53,14 @@ class Wilayah_model extends CI_Model
   {
 
     $main_sql = "FROM
-      (select d.region_code as region_code,d.region_name as nama_desa,
-        (select r.region_name from tbl_regions r where r.region_code = substr(d.region_code,1,8)) as nama_kecamatan,
-        (select r.region_name from tbl_regions r where r.region_code = substr(d.region_code,1,5)) as nama_kabupaten,
-        (select r.region_name from tbl_regions r where r.region_code = substr(d.region_code,1,2)) as nama_provinsi
+      (select t.region_code as region_code,t.region_name as nama_desa,
+        (select r.region_name from tbl_regions r where r.region_code = substr(t.region_code,1,8)) as nama_kecamatan,
+        (select r.region_name from tbl_regions r where r.region_code = substr(t.region_code,1,5)) as nama_kabupaten,
+        (select r.region_name from tbl_regions r where r.region_code = substr(t.region_code,1,2)) as nama_provinsi,
+        t.desa_id
       FROM
-      (select * from tbl_regions where char_length(region_code) = 13) d) z
+      (select x.* from tbl_regions x
+        where char_length(x.region_code) = 13) t) z
         WHERE 1=1
     ";
     return $main_sql;

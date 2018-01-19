@@ -29,8 +29,10 @@ class Desa_model extends CI_Model{
     // https://ubuntuforums.org/showthread.php?t=2086550
     $sql = "ALTER TABLE desa AUTO_INCREMENT = 1";
     $this->db->query($sql);
-    if (!$this->wilayah_model->cek_baku($data))
-      $data['jenis'] = 2; // jenis = 2 jika nama provinsi tidak baku
+    $tbl_region_id = $this->wilayah_model->cek_baku($data);
+    if (empty($tbl_region_id)) {
+      $data['jenis'] = 2; // jenis = 2 jika nama desa tidak baku
+    }
     $data['id'] = $this->_desa_baru($data);
     if (empty($data['id'])){
       $data['is_local'] = (is_local($data['url']) or is_local($data['ip_address'])) ? '1' : '0';
@@ -42,6 +44,10 @@ class Desa_model extends CI_Model{
     } else {
       $out = $this->db->where('id',$data['id'])->update('desa',$data);
       $hasil = "<br>Desa lama: ".$data['id'];
+    }
+    if (!empty($tbl_region_id)) {
+      // Kalau desa baku simpan id dari tabel desa di tbl_region
+      $this->db->where('id',$tbl_region_id)->update('tbl_regions',array('desa_id'=>$data['id']));
     }
     $data['version'] = $version;
     $data['external_ip'] = $external_ip;
