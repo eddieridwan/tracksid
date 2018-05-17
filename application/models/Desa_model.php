@@ -3,9 +3,9 @@
 class Desa_model extends CI_Model{
 
   var $table = 'desa';
-  var $column_order = array(null, null, 'nama_desa','nama_kecamatan','nama_kabupaten','nama_provinsi','web','offline','online','tgl_ubah'); //set column field database for datatable orderable
+  var $column_order = array(null, null, 'nama_desa','nama_kecamatan','nama_kabupaten','nama_provinsi','url_hosting','versi_lokal','versi_hosting','tgl_akses'); //set column field database for datatable orderable
   var $column_order_kabupaten = array(null, 'nama_kabupaten','nama_provinsi','offline','online'); //set column field database for datatable orderable
-  var $column_order_versi = array(null, 'opensid_version','offline','online'); //set column field database for datatable orderable
+  var $column_order_versi = array(null, 'versi','offline','online'); //set column field database for datatable orderable
   var $column_search = array('nama_desa','nama_kecamatan','nama_kabupaten','nama_provinsi'); //set column field database for datatable searchable
   var $order = array('id' => 'asc'); // default order
 
@@ -147,24 +147,8 @@ class Desa_model extends CI_Model{
 
   private function _get_main_query()
   {
-
     $main_sql = "FROM
-      (SELECT id, nama_desa, nama_kecamatan, nama_kabupaten, nama_provinsi,
-        max(tgl_ubah) as tgl_ubah,
-        max(web) as web,
-        min(tgl_rekam) as tgl_rekam,
-        max(offline) as offline,
-        max(online) as online,
-        max(jenis) as jenis
-      FROM
-      (SELECT id, nama_desa, nama_kecamatan, nama_kabupaten, nama_provinsi, DATE_FORMAT(tgl_rekam, '%Y-%m-%d') as tgl_rekam, is_local, DATE_FORMAT(tgl_ubah, '%Y-%m-%d') as tgl_ubah, jenis,
-        CASE WHEN is_local = 0 THEN url ELSE '' END as web,
-        (SELECT opensid_version
-          FROM akses WHERE d.id = desa_id and d.is_local = 0 ORDER BY tgl DESC LIMIT 1) as online,
-        (SELECT opensid_version
-          FROM akses WHERE d.id = desa_id and d.is_local = 1 ORDER BY tgl DESC LIMIT 1) as offline
-      FROM desa d) z
-      GROUP By nama_desa, nama_kecamatan, nama_kabupaten, nama_provinsi) w
+      desa
       WHERE 1=1
     ";
     return $main_sql;
@@ -176,10 +160,10 @@ class Desa_model extends CI_Model{
     if($this->input->post('is_local') !== null) {
       switch ($this->input->post('is_local')) {
         case '0':
-          $filtered_query .= " AND online <> '' ";
+          $filtered_query .= " AND versi_hosting <> '' ";
           break;
         case '1':
-          $filtered_query .= " AND offline <> '' ";
+          $filtered_query .= " AND versi_lokal <> '' ";
           break;
       }
     }
@@ -205,13 +189,13 @@ class Desa_model extends CI_Model{
   {
     switch ($akses) {
       case '1':
-        $sql = " AND TIMESTAMPDIFF(MONTH, tgl_ubah, NOW()) > 1 ";
+        $sql = " AND TIMESTAMPDIFF(MONTH, GREATEST(tgl_akses_lokal, tgl_akses_hosting), NOW()) > 1 ";
         break;
       case '2':
-        $sql = " AND TIMESTAMPDIFF(MONTH, tgl_ubah, NOW()) <= 1 ";
+        $sql = " AND TIMESTAMPDIFF(MONTH, GREATEST(tgl_akses_lokal, tgl_akses_hosting), NOW()) <= 1 ";
         break;
       case '3':
-        $sql = " AND TIMESTAMPDIFF(MONTH, tgl_ubah, NOW()) > 3 ";
+        $sql = " AND TIMESTAMPDIFF(MONTH, GREATEST(tgl_akses_lokal, tgl_akses_hosting), NOW()) > 3 ";
         break;
       default:
         $sql = "";
@@ -222,7 +206,7 @@ class Desa_model extends CI_Model{
 
   function get_datatables()
   {
-    $qry = "SELECT * ".$this->_get_filtered_query();
+    $qry = "SELECT *, GREATEST(tgl_akses_lokal, tgl_akses_hosting) AS tgl_akses ".$this->_get_filtered_query();
     if(isset($_POST['order'])) // here order processing
     {
       $sort_by = $this->column_order[$_POST['order']['0']['column']];
@@ -256,10 +240,10 @@ class Desa_model extends CI_Model{
     if($this->input->post('is_local') !== null) {
       switch ($this->input->post('is_local')) {
         case '0':
-          $filtered_query .= " AND online > 0 ";
+          $filtered_query .= " AND versi_hosting <> '' ";
           break;
         case '1':
-          $filtered_query .= " AND offline > 0 ";
+          $filtered_query .= " AND versi_lokal <> '' ";
           break;
       }
     }
@@ -285,9 +269,9 @@ class Desa_model extends CI_Model{
     $query = " FROM
       (SELECT DISTINCT nama_provinsi, nama_kabupaten,
         (SELECT count(*)
-        FROM desa x where x.nama_provinsi = d.nama_provinsi and x.nama_kabupaten = d.nama_kabupaten and x.is_local = 1) offline,
+        FROM desa x where x.nama_provinsi = d.nama_provinsi and x.nama_kabupaten = d.nama_kabupaten and x.versi_lokal <> '') offline,
         (SELECT count(*)
-        FROM desa x where x.nama_provinsi = d.nama_provinsi and x.nama_kabupaten = d.nama_kabupaten and x.is_local = 0) online
+        FROM desa x where x.nama_provinsi = d.nama_provinsi and x.nama_kabupaten = d.nama_kabupaten and x.versi_hosting <> '') online
         from desa d
       ) z
       WHERE 1
@@ -319,14 +303,16 @@ class Desa_model extends CI_Model{
 
   private function _main_versi_query() {
     $query = " FROM
-      (select opensid_version,
-        sum(case when is_local = 1 then 1 else 0 end) offline,
-        sum(case when is_local = 0 then 1 else 0 end) online
-      from
-        (SELECT is_local,
-          (SELECT opensid_version FROM akses a where d.id = desa_id order by tgl desc limit 1) as opensid_version
-        FROM desa d) z
-      group by opensid_version) w
+      (SELECT versi,
+        SUM(CASE WHEN jenis='offline' THEN 1 ELSE 0 END) AS offline,
+        SUM(CASE WHEN jenis='online' THEN 1 ELSE 0 END) AS online
+      FROM
+      (SELECT versi_lokal AS versi, 'offline' AS jenis FROM desa
+      WHERE versi_lokal <> ''
+      UNION ALL
+      SELECT versi_hosting as versi, 'online' AS jenis FROM desa
+      WHERE versi_hosting <> '') t
+      GROUP BY versi) x
       WHERE 1
     ";
     return $query;
@@ -345,7 +331,7 @@ class Desa_model extends CI_Model{
       }
     }
     $sSearch = $_POST['search']['value'];
-    $filtered_query .= " AND opensid_version LIKE '%".$sSearch."%'";
+    $filtered_query .= " AND versi LIKE '%".$sSearch."%'";
     return $filtered_query;
   }
 
@@ -373,7 +359,7 @@ class Desa_model extends CI_Model{
       $sort_type = $_POST['order']['0']['dir'];
       $qry .= " ORDER BY ".$sort_by." ".$sort_type;
     } else
-      $qry .= "ORDER BY opensid_version DESC";
+      $qry .= "ORDER BY versi DESC";
     if($_POST['length'] != -1)
      $qry .= " LIMIT ".$_POST['start'].", ".$_POST['length'];
     $query = $this->db->query($qry);

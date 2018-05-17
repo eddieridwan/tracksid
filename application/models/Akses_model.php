@@ -41,7 +41,7 @@ class Akses_model extends CI_Model{
       ->limit(1)->get('akses');
     if ($query->num_rows() > 0) {
       $akses = $query->row();
-      $this->db->where('id',$akses->id)->update('akses',array('tgl',$data['tgl_ubah']));
+      $this->db->where('id',$akses->id)->update('akses',array('tgl' => $data['tgl_ubah']));
       return true;
     } else return false;
   }

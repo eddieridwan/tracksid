@@ -110,7 +110,7 @@ class Laporan extends Public_Controller {
       $no++;
       $row = array();
       $row[] = $no;
-      $row[] = $desa['opensid_version'];
+      $row[] = $desa['versi'];
       $row[] = $desa['offline'];
       $row[] = $desa['online'];
       $data[] = $row;
@@ -161,10 +161,10 @@ class Laporan extends Public_Controller {
       $row[] = $desa['nama_kecamatan'];
       $row[] = $desa['nama_kabupaten'];
       $row[] = $desa['nama_provinsi'];
-      $row[] = empty($desa['web']) ? 'localhost' : $this->_show_url($desa['web']);
-      $row[] = $desa['offline'];
-      $row[] = $desa['online'];
-      $row[] = $desa['tgl_ubah'];
+      $row[] = empty($desa['url_hosting']) ? 'localhost' : $this->_show_url($desa['url_hosting']);
+      $row[] = $desa['versi_lokal'];
+      $row[] = $desa['versi_hosting'];
+      $row[] = $desa['tgl_akses'];
       $row[] = $desa['jenis']; // jenis tidak ditampilkan
 
       $data[] = $row;
