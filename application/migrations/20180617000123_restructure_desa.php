@@ -54,7 +54,7 @@ class Migration_Restructure_desa extends CI_Migration
       $j = $i;
       $desa_lokal = NULL;
       $desa_hosting = NULL;
-      while ($nama == $this->nama($list_desa[$j])) {
+      while ($j < count($list_desa) and $nama == $this->nama($list_desa[$j])) {
         if ($list_desa[$j]['is_local']) {
           if (isset($desa_lokal))
             // Hapus duplikat
@@ -72,8 +72,8 @@ class Migration_Restructure_desa extends CI_Migration
       }
       $i = $j - 1;
       $this->salinAkses($desa_hosting, $desa_lokal);
-      // $this->hapusKolomDesa();
     }
+    $this->hapusKolomDesa();
   }
 
   private function tambahKolomDesa()

@@ -53,7 +53,10 @@ class Desa_model extends CI_Model {
 				$sql = "ALTER TABLE desa AUTO_INCREMENT = 1";
 				$this->db->query($sql);
 				// Desa baru, hanya satu tgl_akses terisi
-				$data['tgl_rekam'] = isset($data['tgl_akses_lokal']) ? $data['tgl_akses_lokal'] : $data['tgl_akses_hosting'];
+				if (isset($data['tgl_akses_lokal']))
+					$data['tgl_rekam_lokal'] = $data['tgl_akses_lokal'];
+				else
+					$data['tgl_rekam_hosting'] = $data['tgl_akses_hosting'];
 				$this->db->insert('desa', $data);
 				$desa_id = $this->db->insert_id();
 				$this->notifikasi($data);

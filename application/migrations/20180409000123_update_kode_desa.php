@@ -40,13 +40,15 @@ class Migration_Update_kode_desa extends CI_Migration
             + else update nama kecamatan
         - buat desa baru KODE-PROV.KODE-KAB.KODE-KEC.KODE-DESA
     */
-    $list_desa = $this->db->get('desa')->result_array();
-    for ($i=0; $i < count($daftar_desa); $i++){
-      $tbl_region_id = $this->wilayah_model->cek_baku($desa);
-      if (!empty($tbl_region_id)) {
-        $this->db->where('id',$tbl_region_id)->update('tbl_regions',array('desa_id'=>$desa['id']));
-      }
-    }
+
+        // TODO: migrasi ini belum dikerjakan
+  //   $list_desa = $this->db->get('desa')->result_array();
+  //   for ($i=0; $i < count($daftar_desa); $i++){
+  //     $tbl_region_id = $this->wilayah_model->cek_baku($desa);
+  //     if (!empty($tbl_region_id)) {
+  //       $this->db->where('id',$tbl_region_id)->update('tbl_regions',array('desa_id'=>$desa['id']));
+  //     }
+  //   }
   }
 
 	public function down()
