@@ -169,6 +169,9 @@ class Migration_Restructure_desa extends CI_Migration
         foreach ($kolom_salin as $key => $value) {
           $desa_hosting[$value.'_lokal'] = $akses_terkini[$key];
         }
+        // Timpa dengan data dari tabel desa yang lebih konsisten
+        $desa_hosting['ip_lokal'] = $desa_lokal['ip_address'];
+        $desa_hosting['url_lokal'] = $desa_lokal['url'];
         $desa_hosting['tgl_rekam_lokal'] = $desa_lokal['tgl_rekam'];
         // Hapus desa lokal
         $this->db->where('id', $desa_lokal['id'])->delete('desa');
@@ -191,6 +194,9 @@ class Migration_Restructure_desa extends CI_Migration
       foreach ($kolom_salin as $key => $value) {
         $desa_lokal[$value.'_lokal'] = $akses_terkini[$key];
       }
+      // Timpa dengan data dari desa yang lebih konsisten
+      $desa_lokal['ip_lokal'] = $desa_lokal['ip_address'];
+      $desa_lokal['url_lokal'] = $desa_lokal['url'];
       // Hapus akses lama
       $this->hapusAksesLama($akses_terkini);
       $desa_lokal['tgl_rekam_lokal'] = $desa_lokal['tgl_rekam'];
