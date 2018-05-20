@@ -155,7 +155,8 @@ class Desa_model extends CI_Model {
 			$abaikan = true;
 		}
 		// Abaikan situs demo
-		if (preg_match('/sid.bangundesa.info|languagetechnologies.com|demosid.opensid.info|sistemdesa.sunshinecommunity.id/', $data['url']))
+		$abaikan_situs = '/'.$this->config->item('abaikan').'/';
+		if (preg_match($abaikan_situs, $data['url']))
 			$abaikan = true;
 		return $abaikan;
 	}
