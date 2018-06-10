@@ -287,7 +287,7 @@ class Desa_model extends CI_Model {
 	function _main_kabupaten_query()
 	{
 		$query = " FROM
-			(SELECT DISTINCT nama_provinsi, nama_kabupaten,
+			(SELECT DISTINCT nama_provinsi, nama_kabupaten, versi_lokal, versi_hosting,
 				(SELECT count(*)
 				FROM desa x where x.nama_provinsi = d.nama_provinsi and x.nama_kabupaten = d.nama_kabupaten and x.versi_lokal <> '') offline,
 				(SELECT count(*)
