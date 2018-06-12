@@ -18,9 +18,26 @@ class Dashboard extends CI_Controller {
 	 * map to /index.php/welcome/<method_name>
 	 * @see https://codeigniter.com/user_guide/general/urls.html
 	 */
+  function __construct(){
+    parent::__construct();
+    session_start();
+    $this->load->helper('url');
+    $this->load->model('desa_model');
+  }
+
 	public function index()
 	{
 		$this->load->view('dashboard');
+	}
+
+	public function index_baru()
+	{
+		$data = array();
+		$data = $this->desa_model->jmlDesa();
+		$this->load->view('dashboard/header');
+		$this->load->view('dashboard/nav');
+		$this->load->view('dashboard/dashboard', $data);
+		$this->load->view('dashboard/footer');
 	}
 
 }

@@ -14,6 +14,19 @@ user_guide_src/cilexer/build/*
 user_guide_src/cilexer/dist/*
 user_guide_src/cilexer/pycilexer.egg-info/*
 /vendor/
+installer
+
+# File vendor yang diperlukan
+!vendor/almasaeed2010/adminlte/bower_components/bootstrap/dist/css/bootstrap.min.css
+!vendor/almasaeed2010/adminlte/bower_components/font-awesome/css/font-awesome.min.css
+!vendor/almasaeed2010/adminlte/bower_components/ionicons/css/ionicons.min.css
+!vendor/almasaeed2010/adminlte/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css
+!vendor/almasaeed2010/adminlte/dist/css/AdminLTE.min.css
+!vendor/almasaeed2010/adminlte/dist/css/skins/_all-skins.min.css
+!vendor/almasaeed2010/adminlte/plugins/pace/pace.min.css
+!vendor/almasaeed2010/adminlte/bower_components/jquery/dist/jquery.min.js
+!vendor/almasaeed2010/adminlte/bower_components/bootstrap/dist/js/bootstrap.min.js
+!vendor/almasaeed2010/adminlte/dist/js/adminlte.min.js
 
 # IDE Files
 #-------------------------

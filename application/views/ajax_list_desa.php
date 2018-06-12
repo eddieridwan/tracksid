@@ -4,17 +4,27 @@
         tr.nonaktif { background-color: #F9E79F !important; }
     </style>
 
-    <!-- <?php $this->load->view('_laporan_nav'); ?> -->
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        Desa OpenSID
+        <small>(Desa yang memasang OpenSID)</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="<?= site_url()?>"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li>Laporan</li>
+        <li class="active">Desa OpenSID</li>
+      </ol>
+    </section>
 
-    <div id="main" class="container">
+    <!-- Main content -->
+    <section class="content container-fluid" id="main">
 
-      <!-- Use any element to open the sidenav -->
-<!--       <button type="button" class="btn btn-secondary">
-        <span onclick="openNav()">Menu</span>
-      </button>
- -->
-
-        <h2>Desa OpenSID</h2>
+      <!--------------------------
+        | Your Page Content Here |
+        -------------------------->
 
         <div>
             <input type="hidden" name="arg_id_local" value="<?php echo $is_local?>">
@@ -89,7 +99,28 @@
                 </tr>
             </tfoot>
         </table>
-    </div>
+
+
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+
+    <?php $adminlte = 'vendor/almasaeed2010/adminlte/'; ?>
+    <script src="<?= base_url($adminlte.'bower_components/jquery/dist/jquery.min.js')?>"></script>
+    <script src="<?= base_url($adminlte.'bower_components/bootstrap/dist/js/bootstrap.min.js')?>"></script>
+    <script src="<?= base_url($adminlte.'dist/js/adminlte.min.js')?>"></script>
+
+    <!-- Ambil confirmation dialog dari https://ethaizone.github.io/Bootstrap-Confirmation/#install
+    -->
+	  <script src="<?php echo base_url('assets/js/popper.js')?>"></script> <!-- diperlukan bootstrap -->
+    <script src="<?php echo base_url('assets/js/bootstrap-tooltip.js') ?>"></script> <!-- diperlukan bootstrap-confirmation -->
+    <script src="<?php echo base_url('assets/js/bootstrap-confirmation.js') ?>"></script>
+    <script src="<?php echo base_url('assets/datatables/js/jquery.dataTables.min.js')?>"></script>
+    <script src="<?php echo base_url('assets/datatables/js/dataTables.bootstrap.min.js')?>"></script>
+    <script src="<?php echo base_url('assets/js/script.js') ?>"></script>
+
+
 
 <script type="text/javascript">
 

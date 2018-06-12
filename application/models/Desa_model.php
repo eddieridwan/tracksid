@@ -268,26 +268,27 @@ class Desa_model extends CI_Model {
 		}
 		$sSearch = $_POST['search']['value'];
 		$filtered_query .= " AND (nama_kabupaten LIKE '%".$sSearch."%' OR nama_provinsi LIKE '%".$sSearch."%')";
+		$filtered_query .= ' GROUP BY nama_kabupaten ';
 		return $filtered_query;
 	}
 
 	function count_filtered_kabupaten()
 	{
-		$sql = "SELECT COUNT(*) AS jml ".$this->_filtered_kabupaten_query();
+		$sql = "SELECT COUNT(*) AS jml FROM (SELECT * ".$this->_filtered_kabupaten_query().") k";
 		$jml = $this->db->query($sql)->row()->jml;
 		return $jml;
 	}
 
 	public function count_all_kabupaten()
 	{
-		$jumlah = $this->db->select('count(DISTINCT nama_kabupaten, nama_provinsi) as jumlah')->from('desa')->get()->row()->jumlah;
+		$jumlah = $this->db->select('count(DISTINCT nama_kabupaten) as jumlah')->from('desa')->get()->row()->jumlah;
 		return $jumlah;
 	}
 
 	function _main_kabupaten_query()
 	{
 		$query = " FROM
-			(SELECT DISTINCT nama_provinsi, nama_kabupaten, versi_lokal, versi_hosting,
+			(SELECT DISTINCT nama_kabupaten, nama_provinsi, versi_lokal, versi_hosting,
 				(SELECT count(*)
 				FROM desa x where x.nama_provinsi = d.nama_provinsi and x.nama_kabupaten = d.nama_kabupaten and x.versi_lokal <> '') offline,
 				(SELECT count(*)
@@ -420,6 +421,18 @@ class Desa_model extends CI_Model {
 		if ($this->email->send())
 			echo "<br>Notifikasi desa baru : ".$message;
 		else show_error($this->email->print_debugger());
+	}
+
+	public function  jmlDesa()
+	{
+		$this->db->select("count(*) as desa_total");
+		$this->db->select("(select count(*) from desa x where x.versi_lokal <> '') desa_offline");
+		$this->db->select("(select count(*) from desa x where x.versi_hosting <> '') desa_online");
+		$this->db->select("count(distinct nama_kabupaten) as kabupaten_total");
+		$this->db->select("(select count(distinct nama_kabupaten) from desa x where x.versi_lokal <> '') kabupaten_offline");
+		$this->db->select("(select count(distinct nama_kabupaten) from desa x where x.versi_hosting <> '') kabupaten_online");
+		$data = $this->db->get('desa')->row_array();
+		return $data;
 	}
 }
 ?>

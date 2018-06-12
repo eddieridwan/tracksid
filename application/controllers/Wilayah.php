@@ -24,8 +24,10 @@ class Wilayah extends Public_Controller {
     $data['kab'] = $this->input->post('kab');
     $header = new stdClass();
     $header->title = "Wilayah Administratif";
-    $this->load->view('header', $header);
-    $this->load->view('ajax_list_wilayah',$data);
+
+    $this->load->view('dashboard/header');
+    $this->load->view('dashboard/nav');
+    $this->load->view('ajax_list_wilayah', $data);
     $this->load->view('footer');
   }
 

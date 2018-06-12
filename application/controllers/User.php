@@ -110,10 +110,13 @@ class User extends CI_Controller {
 
 		if ($this->form_validation->run() == false) {
 
-			// validation not ok, send validation errors to the view
-			$this->load->view('header');
+	    $header = new stdClass();
+	    $header->title = 'Login';
+		// validation not ok, send validation errors to the view
+	    $this->load->view('dashboard/header', $header);
+	    $this->load->view('dashboard/nav');
 			$this->load->view('user/login/login');
-			$this->load->view('footer');
+			$this->load->view('dashboard/footer');
 
 		} else {
 

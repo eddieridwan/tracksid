@@ -54,6 +54,6 @@ $route['register'] = 'user/register';
 $route['login'] = 'user/login';
 $route['logout'] = 'user/logout';
 
-$route['default_controller'] = 'laporan';
+$route['default_controller'] = 'dashboard/index_baru';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

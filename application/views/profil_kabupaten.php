@@ -1,16 +1,25 @@
 
 <?php defined('BASEPATH') OR exit('No direct script access allowed');?>
 
-    <!-- <?php $this->load->view('_laporan_nav'); ?> -->
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        Kabupaten OpenSID
+        <small>(Kabupaten dengan desa OpenSID)</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="<?= site_url()?>"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li>Laporan</li>
+        <li class="active">Kabupaten OpenSID</li>
+      </ol>
+    </section>
 
-    <div id="main" class="container">
-      <!-- Use any element to open the sidenav -->
-<!--       <button type="button" class="btn btn-secondary">
-        <span onclick="openNav()">Menu</span>
-      </button>
- -->
-        <h2>Profil Kabupaten</h2>
+    <!-- Main content -->
+    <section class="content container-fluid" id="main">
 
+        <input type="hidden" name="arg_id_local" value="<?php echo $is_local?>">
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title" >Filter</h3>
@@ -57,18 +66,39 @@
                 </tr>
             </tfoot>
         </table>
-    </div>
 
     <form action="<?php echo site_url("laporan")?>" method="POST" id="show_desa">
         <input name='is_local' type="hidden">
         <input name='kab' type="hidden">
     </form>
 
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+
+<?php $adminlte = 'vendor/almasaeed2010/adminlte/'; ?>
+<script src="<?= base_url($adminlte.'bower_components/jquery/dist/jquery.min.js')?>"></script>
+<script src="<?= base_url($adminlte.'bower_components/bootstrap/dist/js/bootstrap.min.js')?>"></script>
+<script src="<?= base_url($adminlte.'dist/js/adminlte.min.js')?>"></script>
+
+<!-- Ambil confirmation dialog dari https://ethaizone.github.io/Bootstrap-Confirmation/#install
+-->
+<script src="<?php echo base_url('assets/js/popper.js')?>"></script> <!-- diperlukan bootstrap -->
+<script src="<?php echo base_url('assets/js/bootstrap-tooltip.js') ?>"></script> <!-- diperlukan bootstrap-confirmation -->
+<script src="<?php echo base_url('assets/js/bootstrap-confirmation.js') ?>"></script>
+<script src="<?php echo base_url('assets/datatables/js/jquery.dataTables.min.js')?>"></script>
+<script src="<?php echo base_url('assets/datatables/js/dataTables.bootstrap.min.js')?>"></script>
+<script src="<?php echo base_url('assets/js/script.js') ?>"></script>
+
+
 <script type="text/javascript">
 
 var table;
 
 $(document).ready(function() {
+
+    $('#is_local').val($('input[name=arg_id_local').val());
 
     //datatables
     table = $('#table').DataTable({

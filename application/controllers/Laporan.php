@@ -11,7 +11,7 @@ class Laporan extends Public_Controller {
     $this->load->helper('url');
   }
 
-  public function index($offset=0)
+  public function index($is_local='')
   {
     $this->load->helper('form');
     $opt = array('' => 'Semua',
@@ -32,26 +32,29 @@ class Laporan extends Public_Controller {
     );
     $data['form_akses'] = form_dropdown('',$akses,'','id="akses" class="form-control"');
 
-    $data['is_local'] = $this->input->post('is_local');
+    $data['is_local'] = $is_local;
     $data['kab'] = $this->input->post('kab');
 
     $header = new stdClass();
     $header->title = "Desa Pengguna OpenSID";
-    $this->load->view('header', $header);
+    $this->load->view('dashboard/header', $header);
+    $this->load->view('dashboard/nav');
     $this->load->view('ajax_list_desa', $data);
     $this->load->view('footer');
   }
 
-  function profil_kabupaten(){
+  function profil_kabupaten($is_local=''){
     $this->load->helper('form');
     $opt = array('' => 'Semua',
       '1' => 'Offline',
       '0' => 'Online'
     );
     $data['form_server'] = form_dropdown('',$opt,'','id="is_local" class="form-control"');
+    $data['is_local'] = $is_local;
     $header = new stdClass();
     $header->title = 'Kabupaten Pengguna OpenSID';
-    $this->load->view('header', $header);
+    $this->load->view('dashboard/header', $header);
+    $this->load->view('dashboard/nav');
     $this->load->view('profil_kabupaten', $data);
     $this->load->view('footer');
  }
@@ -71,7 +74,6 @@ class Laporan extends Public_Controller {
       $row[] = $this->_show_desa_kabupaten($desa['nama_kabupaten'], 0, $desa['online']);
       $data[] = $row;
     }
-
     $output = array(
             "draw" => $_POST['draw'],
             "recordsTotal" => $this->desa_model->count_all_kabupaten(),
@@ -96,7 +98,8 @@ class Laporan extends Public_Controller {
     $data['form_server'] = form_dropdown('',$opt,'','id="is_local" class="form-control"');
     $header = new stdClass();
     $header->title = 'Versi OpenSID';
-    $this->load->view('header', $header);
+    $this->load->view('dashboard/header', $header);
+    $this->load->view('dashboard/nav');
     $this->load->view('profil_versi', $data);
     $this->load->view('footer');
   }

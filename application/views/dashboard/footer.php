@@ -1,4 +1,3 @@
-	<!-- Perubahan script coding untuk bisa menampilkan footer dalam bentuk tampilan bootstrap (AdminLTE)  -->
 			<footer class="main-footer">
 				<div class="pull-right hidden-xs">
 				  	<b><a href="http://opensid.info">www.opensid.info</a></b>
@@ -8,30 +7,34 @@
 			</footer>
 		</div>
 
-	<script type="text/javascript">
-		$(document).ready(function() {
-	    //Enable sidebar dinamic menu
-	    dinamicMenu();
-	  });
+
+	  <?php $adminlte = 'vendor/almasaeed2010/adminlte/'; ?>
+		<script src="<?= base_url($adminlte.'bower_components/jquery/dist/jquery.min.js')?>"></script>
+		<script src="<?= base_url($adminlte.'bower_components/bootstrap/dist/js/bootstrap.min.js')?>"></script>
+		<script src="<?= base_url($adminlte.'dist/js/adminlte.min.js')?>"></script>
+
+		<script type="text/javascript">
+
+			$(document).ready(function() {
+				$('.sidebar-menu li').removeClass("active");
+		    //Enable sidebar dinamic menu
+		    dinamicMenu();
+		  });
 	    /* DinamicMenu()
 	     * dinamic activate menu
 	     */
 	    function dinamicMenu() {
 	        var url = window.location;
-	        url = url.toString();
-
-	        // Kasus wilayah tidak bisa aktif -- keanehan
-	        if (url.includes('wilayah')) { $('#wilayah').addClass('active') };
-
 	        // Will only work if string in href matches with location
-	        $('.sidebar-menu li a[href="' + url + '"]').addClass('active');
+	        $('.sidebar-menu li a[href="' + url + '"]').parent().addClass('active');
 	        $('.treeview-menu li a[href="' + url + '"]').parent().addClass('active');
 	        // Will also work for relative and absolute hrefs
 	        $('.treeview-menu li a').filter(function() {
 	            return this.href == url;
 	        }).parent().parent().parent().addClass('active');
 	    };
-	</script>
+
+	  </script>
 
 
 
