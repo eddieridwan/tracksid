@@ -15,7 +15,7 @@
       <ol class="breadcrumb">
         <li><a href="<?= site_url()?>"><i class="fa fa-dashboard"></i> Home</a></li>
         <li>Laporan</li>
-        <li class="active">Desa OpenSID</li>
+        <li class="active">Review Desa</li>
       </ol>
     </section>
 
