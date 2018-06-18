@@ -272,6 +272,16 @@ class Desa_model extends CI_Model {
 		return $filtered_query;
 	}
 
+	public function get_review()
+	{
+		$this->db->select('*');
+		$this->db->select("DATE_FORMAT(GREATEST(tgl_akses_lokal, tgl_akses_hosting),'%Y-%m-%d') AS tgl_akses");
+		$this->db->where("GREATEST(tgl_akses_lokal, tgl_akses_hosting) < NOW()-INTERVAL 4 MONTH");
+		$this->db->where("jenis = 2");
+		$data = $this->db->get('desa')->result();
+		return $data;
+	}
+
 	function count_filtered_kabupaten()
 	{
 		$sql = "SELECT COUNT(*) AS jml FROM (SELECT * ".$this->_filtered_kabupaten_query().") k";

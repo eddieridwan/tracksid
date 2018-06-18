@@ -25,7 +25,10 @@
           <li><a href="<?= site_url('laporan/profil_versi')?>">Versi OpenSID</a></li>
         </ul>
       </li>
-      <li id="wilayah"><a href="<?= site_url('wilayah')?>"><i class="fa fa-list"></i> <span>Wilayah Administratif</span></a></li>
+      <li id="wilayah"><a href="<?= site_url('wilayah')?>"><i class="fa fa-map"></i> <span>Wilayah Administratif</span></a></li>
+      <?php if (admin_logged_in()): ?>
+        <li><a href="<?= site_url('laporan/review')?>"><i class="fa fa-bookmark"></i> <span>Review Desa</span></a></li>
+      <?php endif; ?>
   	</ul>
 	</section>
  </aside>
