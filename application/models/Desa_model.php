@@ -286,8 +286,14 @@ class Desa_model extends CI_Model {
 	{
 		$data = $this->db
 			->select('*')
-			->select("DATE_FORMAT(LEAST(tgl_rekam_lokal, tgl_rekam_hosting),'%Y-%m-%d') AS tgl_rekam")
-			->where("LEAST(tgl_rekam_lokal, tgl_rekam_hosting) >= DATE(NOW()) - INTERVAL 7 DAY")
+			->select("
+					IF (versi_lokal IS NULL, tgl_rekam_hosting,
+						IF (versi_hosting IS NULL, tgl_rekam_lokal, LEAST(tgl_rekam_lokal, tgl_rekam_hosting))) AS tgl_rekam
+				")
+			->where("
+					(SELECT IF (versi_lokal IS NULL, tgl_rekam_hosting,
+						IF (versi_hosting IS NULL, tgl_rekam_lokal, LEAST(tgl_rekam_lokal, tgl_rekam_hosting))) AS tgl_rekam)
+					 >= DATE(NOW()) - INTERVAL 7 DAY")
 			->order_by('tgl_rekam DESC')
 			->get('desa')
 			->result();

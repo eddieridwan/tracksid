@@ -3,6 +3,9 @@
       font-size: 80px;
       top: 4px;
     }
+    td.break {
+      word-break: break-all;
+    }
   </style>
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
@@ -103,7 +106,7 @@
                                 <td><?= $data->nama_kecamatan ?></td>
                                 <td><?= $data->nama_kabupaten ?></td>
                                 <td><?= $data->nama_provinsi ?></td>
-                                <td><a href="http://<?= $data->url_hosting ?>" target='_blank'><?= $data->url_hosting ?></a></td>
+                                <td class="break"><a href="http://<?= $data->url_hosting ?>" target='_blank'><?= $data->url_hosting ?></a></td>
                               </tr>
                             <?php endforeach; ?>
                           </tbody>
