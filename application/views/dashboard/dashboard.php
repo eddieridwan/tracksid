@@ -68,6 +68,53 @@
                     <a href="<?=site_url('laporan/index/1')?>" class="small-box-footer">Lihat Detail  <i class="fa fa-arrow-circle-right"></i></a>
                    </div>
                 </div>
+
+                <div class="col-md-12">
+                  <div class="box box-primary collapsed-box">
+                    <div class="box-header with-border">
+                      <h3 class="box-title">Desa baru dalam 7 hari terakhir</h3>
+
+                      <div class="box-tools pull-right">
+                        <span data-toggle="tooltip" title="<?= count($baru) ?> Desa Baru" class="badge bg-light-blue"><?= count($baru) ?></span>
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                        </button>
+                      </div>
+                      <!-- /.box-tools -->
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+
+                      <table id="table" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                          <thead>
+                              <tr>
+                                  <th>No</th>
+                                  <th>Desa</th>
+                                  <th>Kecamatan</th>
+                                  <th>Kabupaten</th>
+                                  <th>Provinsi</th>
+                                  <th>Web</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                            <?php foreach($baru as $data): ?>
+                              <tr>
+                                <td></td>
+                                <td><?= $data->nama_desa ?></td>
+                                <td><?= $data->nama_kecamatan ?></td>
+                                <td><?= $data->nama_kabupaten ?></td>
+                                <td><?= $data->nama_provinsi ?></td>
+                                <td><a href="http://<?= $data->url_hosting ?>" target='_blank'><?= $data->url_hosting ?></a></td>
+                              </tr>
+                            <?php endforeach; ?>
+                          </tbody>
+                      </table>
+
+                    </div>
+                    <!-- /.box-body -->
+                  </div>
+                  <!-- /.box -->
+                </div>
+
               </div>
           </div>
           <div class='box box-info'>
@@ -120,3 +167,5 @@
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
+
+

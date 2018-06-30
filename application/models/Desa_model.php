@@ -282,6 +282,18 @@ class Desa_model extends CI_Model {
 		return $data;
 	}
 
+	public function get_baru()
+	{
+		$data = $this->db
+			->select('*')
+			->select("DATE_FORMAT(LEAST(tgl_rekam_lokal, tgl_rekam_hosting),'%Y-%m-%d') AS tgl_rekam")
+			->where("LEAST(tgl_rekam_lokal, tgl_rekam_hosting) >= DATE(NOW()) - INTERVAL 7 DAY")
+			->order_by('tgl_rekam DESC')
+			->get('desa')
+			->result();
+		return $data;
+	}
+
 	function count_filtered_kabupaten()
 	{
 		$sql = "SELECT COUNT(*) AS jml FROM (SELECT * ".$this->_filtered_kabupaten_query().") k";

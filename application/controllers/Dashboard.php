@@ -34,6 +34,7 @@ class Dashboard extends CI_Controller {
 	{
 		$data = array();
 		$data = $this->desa_model->jmlDesa();
+    $data['baru'] = $this->desa_model->get_baru();
 		$this->load->view('dashboard/header');
 		$this->load->view('dashboard/nav');
 		$this->load->view('dashboard/dashboard', $data);
