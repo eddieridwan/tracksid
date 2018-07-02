@@ -164,7 +164,7 @@ class Laporan extends Public_Controller {
       $row[] = $desa['nama_kecamatan'];
       $row[] = $desa['nama_kabupaten'];
       $row[] = $desa['nama_provinsi'];
-      $row[] = empty($desa['url_hosting']) ? 'localhost' : $this->_show_url($desa['url_hosting']);
+      $row[] = $this->sederhanakan_url($desa['url_hosting']);
       $row[] = $desa['versi_lokal'];
       $row[] = $desa['versi_hosting'];
       $row[] = $desa['tgl_akses'];
@@ -181,6 +181,14 @@ class Laporan extends Public_Controller {
         );
     //output to json format
     echo json_encode($output);
+  }
+
+  private function sederhanakan_url($url)
+  {
+    if (empty($url)) return 'localhost';
+    $url = preg_replace("/\/index.php\/first$|\/index.php\/siteman$|\/first$|\/siteman$/", '', $url);
+    $show_url = $this->_show_url($url);
+    return $show_url;
   }
 
   public function review()

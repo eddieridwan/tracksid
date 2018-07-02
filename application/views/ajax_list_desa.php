@@ -2,6 +2,9 @@
     <style type="text/css">
         tr.highlight { background-color: orange !important; }
         tr.nonaktif { background-color: #F9E79F !important; }
+        td.break {
+          word-break: break-all;
+        }
     </style>
 
   <!-- Content Wrapper. Contains page content -->
@@ -154,6 +157,10 @@ $(document).ready(function() {
             {
                 "targets": [ 0,1 ], //first column / numbering column
                 "orderable": false, //set not orderable
+            },
+            {
+                className: "break",
+                "targets": [ 6 ]
             },
             {
                 "targets": [ <?php echo admin_logged_in() ? '10' : '1,10';?> ], // kolom aksi, jenis tidak ditampilkan
