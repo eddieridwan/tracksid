@@ -1,0 +1,27 @@
+/*
+ * Component: Info Box Small
+ * -------------------
+ */
+.info-box.info-box-sm {
+    min-height: 45px;
+    margin-bottom: 8px;
+}
+.info-box.info-box-sm .small {
+        font-size: 12px;
+}
+.info-box.info-box-sm .info-box-icon {
+    height: 45px;
+    width: 45px;
+    font-size: 24px;
+    line-height: 45px;
+}
+.info-box.info-box-sm .info-box-icon .fa {
+    padding: 20% 0;
+}
+.info-box.info-box-sm .info-box-content {
+    margin-left: 45px;
+}
+.info-box.info-box-sm .bg-primary {
+    color: #fff;
+    background-color: #337ab7;
+}

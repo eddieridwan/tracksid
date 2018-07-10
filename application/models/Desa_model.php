@@ -459,6 +459,9 @@ class Desa_model extends CI_Model {
 		$this->db->select("count(distinct nama_kabupaten) as kabupaten_total");
 		$this->db->select("(select count(distinct nama_kabupaten) from desa x where x.versi_lokal <> '') kabupaten_offline");
 		$this->db->select("(select count(distinct nama_kabupaten) from desa x where x.versi_hosting <> '') kabupaten_online");
+		$this->db->select("(select count(*) from desa x where x.jenis = 2) bukan_desa");
+		$this->db->select("(select count(*) from desa x where GREATEST(tgl_akses_lokal, tgl_akses_hosting) < NOW()-INTERVAL 4 MONTH) tidak_aktif");
+		$this->db->select("(select count(*) from desa x where GREATEST(tgl_akses_lokal, tgl_akses_hosting) >= NOW()-INTERVAL 7 DAY) aktif");
 		$data = $this->db->get('desa')->row_array();
 		return $data;
 	}

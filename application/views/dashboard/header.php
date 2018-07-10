@@ -20,6 +20,7 @@
 		<!-- AdminLTE Skins. -->
 		<link rel="stylesheet" href="<?= base_url().$adminlte?>dist/css/skins/_all-skins.min.css">
 		<link rel="stylesheet" href="<?= base_url().$adminlte?>plugins/pace/pace.min.css">
+		<link href="<?php echo base_url('assets/css/style.css') ?>" rel="stylesheet">
 		<style type="text/css">
 			.navbar-nav>.user-menu .user-image {
 				width: 25px;

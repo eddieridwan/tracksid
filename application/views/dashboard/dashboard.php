@@ -72,6 +72,34 @@
                    </div>
                 </div>
 
+                <div class="col-lg-4">
+                  <div class="info-box info-box-sm">
+                      <span class="info-box-icon bg-green"><i class="fa fa-check"></i></span>
+                      <div class="info-box-content">
+                          <span class="info-box-text"><strong><?= $aktif ?></strong></span>
+                          Aktif 7 hari terakhir
+                      </div><!-- /.info-box-content -->
+                  </div><!-- /.info-box -->
+                </div>
+                <div class="col-lg-4">
+                  <div class="info-box info-box-sm">
+                      <span class="info-box-icon bg-red"><i class="fa fa-times"></i></span>
+                      <div class="info-box-content">
+                          <span class="info-box-text"><strong><?= $tidak_aktif ?></strong></span>
+                          Tidak aktif 4 bulan
+                      </div><!-- /.info-box-content -->
+                  </div><!-- /.info-box -->
+                </div>
+                <div class="col-lg-4">
+                  <div class="info-box info-box-sm">
+                      <span class="info-box-icon bg-yellow"><i class="fa fa-question"></i></span>
+                      <div class="info-box-content">
+                          <span class="info-box-text"><strong><?= $bukan_desa ?></strong></span>
+                          Bukan desa terdaftar
+                      </div><!-- /.info-box-content -->
+                  </div><!-- /.info-box -->
+                </div>
+
                 <div class="col-md-12">
                   <div class="box box-primary collapsed-box">
                     <div class="box-header with-border">
