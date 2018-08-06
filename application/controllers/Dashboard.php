@@ -23,6 +23,7 @@ class Dashboard extends CI_Controller {
     session_start();
     $this->load->helper('url');
     $this->load->model('desa_model');
+    $this->load->model('kabupaten_model');
   }
 
 	public function index()
@@ -35,6 +36,7 @@ class Dashboard extends CI_Controller {
 		$data = array();
 		$data = $this->desa_model->jmlDesa();
     $data['baru'] = $this->desa_model->get_baru();
+    $data['kabupaten_kosong'] = $this->kabupaten_model->belum_ada_desa();
 		$this->load->view('dashboard/header');
 		$this->load->view('dashboard/nav');
 		$this->load->view('dashboard/dashboard', $data);

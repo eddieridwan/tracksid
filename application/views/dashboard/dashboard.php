@@ -188,6 +188,46 @@
 								</div>
 							</div>
 						</div>
+	          <div class="box box-primary collapsed-box">
+	            <div class="box-header with-border">
+	              <h3 class="box-title">Kabupaten yang belum ada ada desa OpenSID</h3>
+
+	              <div class="box-tools pull-right">
+	                <span data-toggle="tooltip" title="<?= count($kabupaten_kosong) ?> Kabupaten belum ada OpenSID" class="badge bg-light-blue"><?= count($kabupaten_kosong) ?></span>
+	                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+	                </button>
+	              </div>
+	              <!-- /.box-tools -->
+	            </div>
+	            <!-- /.box-header -->
+	            <div class="box-body">
+	              <table id="table" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                  <thead>
+                    <tr>
+                      <th>No</th>
+                      <th>Kode Kabupaten
+                      <th>Nama Kabupaten</th>
+                      <th>Nama Provinsi</th>
+                      <th>Jumlah Desa</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <?php foreach($kabupaten_kosong as $data): ?>
+                      <tr>
+                        <td></td>
+                        <td><?= $data->region_code ?></td>
+                        <td><?= $data->nama_kabupaten ?></td>
+                        <td><?= $data->nama_provinsi ?></td>
+                        <td><?= $data->jml_desa ?></td>
+                      </tr>
+                    <?php endforeach; ?>
+                  </tbody>
+	              </table>
+	            </div>
+	            <!-- /.box-body -->
+	          </div>
+
+
 					</div>
 				</div>
 			</div>
