@@ -190,7 +190,7 @@
 						</div>
 	          <div class="box box-primary collapsed-box">
 	            <div class="box-header with-border">
-	              <h3 class="box-title">Kabupaten yang belum ada ada desa OpenSID</h3>
+	              <h3 class="box-title">Kabupaten yang belum ada desa OpenSID</h3>
 
 	              <div class="box-tools pull-right">
 	                <span data-toggle="tooltip" title="<?= count($kabupaten_kosong) ?> Kabupaten belum ada OpenSID" class="badge bg-light-blue"><?= count($kabupaten_kosong) ?></span>
