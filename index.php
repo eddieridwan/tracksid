@@ -55,7 +55,7 @@
  */
 	// define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'development');
 	// Use IP address to set environment
-	define('ENVIRONMENT', (strpos($_SERVER['REMOTE_ADDR'],'10.') === 0) ? 'development' : 'production');
+	define('ENVIRONMENT', preg_match('/10\.|192\./', $_SERVER['REMOTE_ADDR']) ? 'development' : 'production');
 
 /*
  *---------------------------------------------------------------
