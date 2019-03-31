@@ -465,5 +465,16 @@ class Desa_model extends CI_Model {
 		$data = $this->db->get('desa')->row_array();
 		return $data;
 	}
+
+	/*
+	 * Hapus semua desa tidak online yg tidak terdaftar dan tidak diakses selama 4 bulan terakhir
+	*/
+	public function hapus_nonaktif_tdkterdaftar()
+	{
+		$this->db->where("url_hosting is null");
+		$this->db->where("GREATEST(tgl_akses_lokal, tgl_akses_hosting) < NOW()-INTERVAL 4 MONTH");
+		$this->db->where("jenis = 2");
+		$this->db->delete('desa');
+	}
 }
 ?>

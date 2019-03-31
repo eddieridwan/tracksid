@@ -46,5 +46,19 @@ class Akses_model extends CI_Model{
     } else return false;
   }
 
+  /*
+   * Hapus semua akses kecuali yang terakhir
+  */
+  public function bersihkan()
+  {
+    $list_desa = $this->db->select('id')->get('desa')->result_array();
+    foreach ($list_desa as $desa)
+    {
+      // Hapus semua akses kecuali yang terakhir
+      $akses_terakhir = $this->db->select('id')->where('desa_id', $desa['id'])->order_by('tgl DESC')->limit(1)->get('akses')->row()->id;
+      $this->db->where('desa_id', $desa['id'])->where("id <>", $akses_terakhir)->delete('akses');
+    }
+  }
+
 }
 ?>
